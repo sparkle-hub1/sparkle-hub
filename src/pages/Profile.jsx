@@ -121,29 +121,29 @@ export default function Profile() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto w-full pt-10 px-4 text-rose-950">
+    <div className="max-w-6xl mx-auto w-full pt-4 sm:pt-10 px-4 text-rose-950 animate-fade-in-up">
       
       {/* Profile Header */}
-      <div className="bg-white/95 border border-white rounded-[3rem] p-8 md:p-12 mb-10 backdrop-blur-xl shadow-[0_20px_50px_rgba(255,228,230,0.7)] flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden group">
+      <div className="bg-white/95 border border-white rounded-[2rem] sm:rounded-[3rem] p-6 sm:p-8 md:p-12 mb-10 backdrop-blur-xl shadow-[0_20px_50px_rgba(255,228,230,0.7)] flex flex-col items-center md:flex-row md:justify-between gap-6 relative overflow-hidden group">
          <div className="absolute -top-20 -right-20 w-80 h-80 bg-pink-100/60 rounded-full filter blur-[80px] pointer-events-none transition-transform duration-700 group-hover:scale-125"></div>
          
-         <div className="flex flex-col md:flex-row items-center text-center md:text-left gap-6 z-10 w-full md:w-auto">
-           <div className="w-24 h-24 sm:w-28 sm:h-28 bg-gradient-to-br from-pink-300 to-rose-400 rounded-full flex items-center justify-center text-4xl sm:text-5xl font-black text-white shadow-[0_10px_20px_rgba(244,114,182,0.4)] border-4 border-white shrink-0">
+         <div className="flex flex-col md:flex-row items-center text-center md:text-left gap-4 sm:gap-6 z-10 w-full md:w-auto">
+           <div className="w-20 h-20 sm:w-28 sm:h-28 bg-gradient-to-br from-pink-300 to-rose-400 rounded-full flex items-center justify-center text-3xl sm:text-5xl font-black text-white shadow-xl border-4 border-white shrink-0 transform hover:rotate-6 transition-transform">
              {currentUser?.email?.charAt(0).toUpperCase()}
            </div>
-           <div>
-             <h1 className="text-3xl sm:text-4xl font-black text-rose-950 mb-1 leading-tight tracking-tight">Your Collection</h1>
-             <p className="text-rose-600 font-bold mb-3">{currentUser?.email}</p>
-             {isAdmin && <span className="inline-block px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-full text-xs font-bold uppercase tracking-widest border border-emerald-200 shadow-sm">Administrator</span>}
+           <div className="max-w-full overflow-hidden">
+             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-rose-950 mb-1 leading-tight tracking-tight">Personal Collection</h1>
+             <p className="text-rose-600 font-bold text-sm sm:text-base truncate px-2 md:px-0" title={currentUser?.email}>{currentUser?.email}</p>
+             {isAdmin && <span className="inline-block mt-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-emerald-200">System Admin</span>}
            </div>
          </div>
          
-         <div className="flex flex-col sm:flex-row w-full md:w-auto gap-4 z-10 mt-6 md:mt-0">
+         <div className="flex flex-col sm:flex-row w-full md:w-auto gap-3 sm:gap-4 z-10">
            {isAdmin && (
-             <Link to="/admin" className="px-8 py-4 bg-white border border-rose-200 hover:bg-rose-50 hover:border-pink-300 rounded-2xl font-bold text-rose-700 shadow-sm transition-all text-center">Dashboard</Link>
+             <Link to="/admin" className="flex-1 sm:flex-none justify-center px-6 py-3.5 bg-white border border-rose-100 hover:bg-rose-50 hover:border-pink-300 rounded-xl sm:rounded-2xl font-bold text-rose-700 shadow-sm transition-all text-sm outline-none active:scale-95 text-center">Dashboard</Link>
            )}
-           <button onClick={() => setIsChangingPassword(true)} className="px-8 py-4 bg-white border border-rose-200 hover:bg-rose-50 hover:border-pink-300 rounded-2xl font-bold text-rose-700 shadow-sm transition-all">🔐 Change Password</button>
-           <button onClick={() => setIsLogoutModalOpen(true)} className="px-8 py-4 bg-rose-50 hover:bg-red-50 hover:text-red-600 border border-rose-100 hover:border-red-200 rounded-2xl font-bold text-rose-500 shadow-sm transition-all">Sign Out</button>
+           <button onClick={() => setIsChangingPassword(true)} className="flex-1 sm:flex-none justify-center px-6 py-3.5 bg-white border border-rose-100 hover:bg-rose-50 hover:border-pink-300 rounded-xl sm:rounded-2xl font-bold text-rose-700 shadow-sm transition-all text-sm outline-none active:scale-95">🔐 Password</button>
+           <button onClick={() => setIsLogoutModalOpen(true)} className="flex-1 sm:flex-none justify-center px-6 py-3.5 bg-rose-50/50 hover:bg-red-50 hover:text-red-600 border border-rose-100 hover:border-red-200 rounded-xl sm:rounded-2xl font-bold text-rose-500 shadow-sm transition-all text-sm outline-none active:scale-95">Sign Out</button>
          </div>
       </div>
 
@@ -155,16 +155,18 @@ export default function Profile() {
         </h2>
 
         {loading ? (
-          <div className="flex justify-center py-20">
-            <div className="w-16 h-16 border-4 border-pink-400 border-t-transparent rounded-full animate-spin"></div>
+          <div className="flex flex-col items-center justify-center py-20 gap-4">
+            <div className="w-12 h-12 border-4 border-pink-400 border-t-transparent rounded-full animate-spin"></div>
+            <p className="font-bold text-rose-400 text-sm animate-pulse">Retrieving Archives...</p>
           </div>
         ) : orders.length === 0 ? (
-          <div className="bg-white/80 border border-white rounded-[3rem] p-16 text-center backdrop-blur-xl shadow-[0_15px_40px_rgba(255,228,230,0.5)]">
+          <div className="bg-white/80 border border-white rounded-[2rem] sm:rounded-[3rem] p-10 sm:p-20 text-center backdrop-blur-xl shadow-[0_15px_40px_rgba(255,228,230,0.5)]">
             <div className="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner border border-rose-100">
-               <span className="text-3xl">📭</span>
+               <span className="text-4xl animate-bounce">🎨</span>
             </div>
-            <p className="text-rose-800/80 text-lg mb-8 font-medium">You haven't commissioned any masterpieces yet.</p>
-            <Link to="/products" className="inline-block px-10 py-5 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full font-bold text-lg text-white shadow-[0_10px_20px_rgba(244,114,182,0.3)] hover:shadow-[0_15px_30px_rgba(244,114,182,0.4)] transition-all hover:-translate-y-1">Explore Resin Art</Link>
+            <h3 className="text-rose-950 font-black text-xl sm:text-2xl mb-3 leading-tight tracking-tight">No Commissioned Pieces Yet</h3>
+            <p className="text-rose-800/80 text-sm sm:text-lg mb-8 font-medium">Your personal gallery is empty. Let's start with something beautiful.</p>
+            <Link to="/products" className="inline-block px-10 py-5 bg-gradient-to-r from-pink-400 to-rose-400 rounded-2xl font-black text-base sm:text-lg text-white shadow-[0_10px_20px_rgba(244,114,182,0.3)] hover:shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 outline-none">Explore Storefront</Link>
           </div>
         ) : (
           <div className="space-y-8">
@@ -181,23 +183,23 @@ export default function Profile() {
                   order.orderStatus === 'Rejected' ? 'bg-red-400' : 'bg-sky-400'
                 }`}></div>
 
-                <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 pl-4">
-                  <div>
-                    <p className="text-xs text-rose-400 font-bold uppercase tracking-widest mb-1.5 flex items-center gap-2">Order ID</p>
-                    <p className="font-mono text-rose-900 bg-rose-50 font-bold text-sm px-3 py-1.5 rounded-lg border border-rose-100 inline-block truncate max-w-full">{order.id}</p>
+                <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 p-2 md:p-0">
+                  <div className="order-1 md:order-none">
+                    <p className="text-[10px] text-rose-400 font-black uppercase tracking-widest mb-1.5 flex items-center gap-2">Order ID</p>
+                    <p className="font-mono text-rose-900 bg-rose-50/80 font-bold text-[10px] sm:text-xs px-3 py-1.5 rounded-lg border border-rose-100 inline-block truncate max-w-full">REF {order.id.slice(0, 12)}...</p>
                   </div>
-                  <div>
-                    <p className="text-xs text-rose-400 font-bold uppercase tracking-widest mb-1.5">Date Placed</p>
-                    <p className="text-rose-950 font-bold">{order.date}</p>
+                  <div className="order-2 md:order-none">
+                    <p className="text-[10px] text-rose-400 font-black uppercase tracking-widest mb-1.5">Date Authenticated</p>
+                    <p className="text-rose-950 font-black text-sm sm:text-base">{order.date}</p>
                   </div>
-                  <div>
-                    <p className="text-xs text-rose-400 font-bold uppercase tracking-widest mb-1.5">Total Amount</p>
-                    <p className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-500 font-black text-2xl">PKR {order.totalAmount?.toFixed(0)}</p>
+                  <div className="order-4 md:order-none">
+                    <p className="text-[10px] text-rose-400 font-black uppercase tracking-widest mb-1.5">Total Valuation</p>
+                    <p className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-500 font-black text-xl sm:text-2xl">PKR {order.totalAmount?.toFixed(0)}</p>
                   </div>
-                  <div>
-                    <p className="text-xs text-rose-400 font-bold uppercase tracking-widest mb-2">Tracking Status</p>
-                    <span className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest inline-flex items-center gap-2 ${getStatusColor(order.orderStatus)}`}>
-                      <span className="w-2 h-2 rounded-full bg-current"></span>
+                  <div className="order-3 md:order-none">
+                    <p className="text-[10px] text-rose-400 font-black uppercase tracking-widest mb-2">Current Pipeline</p>
+                    <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest inline-flex items-center gap-2 shadow-sm border ${getStatusColor(order.orderStatus)}`}>
+                      <span className="w-2 h-2 rounded-full bg-current animate-pulse"></span>
                       {order.orderStatus || 'Pending'}
                     </span>
                   </div>
@@ -205,28 +207,28 @@ export default function Profile() {
 
                 {/* Items Summary */}
                 <div className="w-full lg:w-72 border-t lg:border-t-0 lg:border-l border-rose-100 pt-6 lg:pt-0 lg:pl-8">
-                   <p className="text-xs text-rose-400 font-bold uppercase tracking-widest mb-4">Requisition Details</p>
+                   <p className="text-[10px] text-rose-400 font-black uppercase tracking-widest mb-4">Commissioned Details</p>
                    <div className="space-y-4">
-                     {order.items?.slice(0, 2).map((item, idx) => (
+                     {order.items?.slice(0, 3).map((item, idx) => (
                        <div key={idx} className="flex items-center gap-4 bg-rose-50/50 p-2 rounded-xl border border-rose-50">
-                         <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover shadow-sm border border-white" />
-                         <div className="flex-1">
-                           <p className="text-sm font-bold text-rose-950 line-clamp-1">{item.name}</p>
-                           <p className="text-xs text-rose-500 font-medium">Qty: {item.quantity} {item.variation && <span className="font-bold text-pink-600 ml-1">• {item.variation}</span>}</p>
+                         <img src={item.image} alt={item.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover shadow-sm border border-white shrink-0" />
+                         <div className="flex-1 min-w-0">
+                           <p className="text-xs font-black text-rose-950 truncate">{item.name}</p>
+                           <p className="text-[10px] text-rose-500 font-bold">Qty {item.quantity} {item.variation && <span className="font-black text-pink-600 ml-1"># {item.variation}</span>}</p>
                          </div>
                        </div>
                      ))}
-                     {order.items?.length > 2 && (
-                       <p className="text-xs text-rose-400 font-bold text-center bg-rose-50 py-2 rounded-xl border border-rose-100 border-dashed">+{order.items.length - 2} more item(s)</p>
+                     {order.items?.length > 3 && (
+                       <p className="text-[10px] text-rose-400 font-black text-center bg-rose-50 py-2 rounded-xl border border-rose-100 border-dashed">+{order.items.length - 3} more masterpieces</p>
                      )}
                    </div>
                    
                    {order.customPictures && order.customPictures.length > 0 && (
-                     <div className="mt-6 border-t border-rose-100 pt-4">
-                       <p className="text-[10px] text-rose-400 font-bold uppercase tracking-widest mb-3">Your Reference Media</p>
+                     <div className="mt-6 border-t border-rose-50 pt-4">
+                       <p className="text-[10px] text-rose-400 font-black uppercase tracking-widest mb-3">Custom Media</p>
                        <div className="flex flex-wrap gap-2">
                          {order.customPictures.map((pic, idx) => (
-                           <a key={idx} href={pic} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg overflow-hidden border border-rose-100 shadow-sm hover:scale-110 transition-transform block shrink-0">
+                           <a key={idx} href={pic} target="_blank" rel="noreferrer" className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg overflow-hidden border border-rose-100 shadow-sm hover:scale-110 transition-transform block shrink-0 active:scale-90">
                              <img src={pic} alt="Ref" className="w-full h-full object-cover" />
                            </a>
                          ))}
@@ -238,16 +240,20 @@ export default function Profile() {
                      <button 
                        onClick={() => handleMakePayment(order)}
                        disabled={isSyncingPayment}
-                       className="mt-6 w-full py-4 bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-white rounded-xl font-black shadow-[0_10px_20px_rgba(251,191,36,0.3)] hover:shadow-lg transition-all flex items-center justify-center gap-3 outline-none disabled:opacity-50 transform hover:-translate-y-1"
+                       className="mt-6 w-full py-4 bg-rose-950 hover:bg-black text-white rounded-xl font-black shadow-lg transition-all flex items-center justify-center gap-3 outline-none disabled:opacity-50 active:scale-95 text-xs sm:text-sm uppercase tracking-widest"
                      >
-                       <span className="text-2xl drop-shadow-sm">💳</span> {isSyncingPayment ? 'Syncing...' : 'Make Payment to Proceed'}
+                       {isSyncingPayment ? (
+                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                       ) : (
+                         <><span>💳</span> Complete Payment</>
+                       )}
                      </button>
                    ) : (
                      <button 
                        onClick={() => handleOrderAgain(order)}
-                       className="mt-6 w-full py-3.5 bg-white hover:bg-rose-50 text-rose-600 border-2 border-rose-200 hover:border-pink-400 rounded-xl font-bold shadow-sm transition-all flex items-center justify-center gap-2 group outline-none"
+                       className="mt-6 w-full py-3.5 bg-white hover:bg-rose-50 text-rose-600 border border-rose-100 hover:border-pink-300 rounded-xl font-black shadow-sm transition-all flex items-center justify-center gap-2 group outline-none active:scale-95 text-[10px] uppercase tracking-widest"
                      >
-                       <span className="text-lg group-hover:scale-125 transition-transform duration-300">🛍️</span> Order Again
+                       <span className="text-lg group-hover:rotate-12 transition-transform duration-300">🔁</span> Repurchase Piece
                      </button>
                    )}
                 </div>

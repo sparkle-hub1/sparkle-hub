@@ -190,7 +190,8 @@ export default function ManageOrders() {
       <div className="bg-white/95 border border-white rounded-[2rem] shadow-[0_20px_60px_rgba(255,228,230,0.8)] backdrop-blur-xl overflow-hidden relative">
         <div className="absolute top-0 right-0 w-64 h-64 bg-pink-100/50 rounded-full filter blur-[80px] pointer-events-none"></div>
         <div className="overflow-x-auto relative z-10 w-full rounded-[2rem]">
-          <table className="w-full min-w-[900px] text-left border-collapse">
+          {/* Desktop Table - Hidden on Mobile */}
+          <table className="hidden md:table w-full min-w-[900px] text-left border-collapse">
             <thead className="bg-rose-50 border-b border-rose-200">
               <tr>
                 <th className="px-6 py-5 text-xs font-black text-rose-500 uppercase tracking-widest whitespace-nowrap">Order Ref</th>
@@ -255,6 +256,54 @@ export default function ManageOrders() {
               )}
             </tbody>
           </table>
+
+          {/* Mobile Card Layout - Hidden on Desktop */}
+          <div className="md:hidden divide-y divide-rose-100">
+            {loading ? (
+              <div className="px-6 py-12 text-center text-rose-600 font-bold flex flex-col items-center gap-3">
+                <div className="w-6 h-6 border-4 border-rose-300 border-t-transparent rounded-full animate-spin"></div>
+                Syncing Pipeline...
+              </div>
+            ) : orders.length === 0 ? (
+              <div className="px-6 py-12 text-center text-rose-500 font-medium">No transactions found.</div>
+            ) : (
+              orders.map(order => (
+                <div key={order.id} className="p-5 flex flex-col gap-4 animate-fade-in-up">
+                  <div className="flex justify-between items-start">
+                    <span className="font-mono text-[10px] font-black text-rose-400 bg-rose-50 px-2 py-1 rounded border border-rose-100 uppercase tracking-wider">REF: {order.id.slice(-8).toUpperCase()}</span>
+                    <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border inline-flex items-center gap-1.5 shadow-sm ${getStatusColor(order.orderStatus)}`}>
+                       <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
+                       {order.orderStatus || 'Pending'}
+                    </span>
+                  </div>
+                  
+                  <div className="flex flex-col gap-1">
+                    <p className="font-black text-rose-950 text-base">{order.customerDetails?.name || 'Guest'}</p>
+                    <p className="text-xs text-rose-600 font-medium">{order.userEmail}</p>
+                    <p className="text-[10px] text-rose-400 font-bold uppercase tracking-widest mt-1">Valuation: <span className="text-rose-900 font-black text-xs px-2 py-0.5 rounded-lg bg-pink-50 border border-pink-100">Rs. {order.totalAmount?.toFixed(0)}</span></p>
+                  </div>
+
+                  <div className="flex items-center justify-between mt-2 pt-4 border-t border-rose-50">
+                    <span className="text-[10px] text-rose-400 font-bold uppercase tracking-widest">{order.date}</span>
+                    <div className="flex items-center gap-2">
+                       <button 
+                         onClick={() => setOrderToDelete(order)}
+                         className="w-10 h-10 flex items-center justify-center text-rose-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all active:scale-90"
+                       >
+                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                       </button>
+                       <button 
+                         onClick={() => openModal(order)} 
+                         className="px-5 py-2.5 bg-rose-950 hover:bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md active:scale-95"
+                       >
+                         Manage Pipeline
+                       </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
 

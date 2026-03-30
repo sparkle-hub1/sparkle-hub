@@ -264,7 +264,8 @@ export default function ManageProducts() {
       <div className="bg-white/95 border border-white rounded-[2rem] shadow-[0_20px_60px_rgba(255,228,230,0.8)] backdrop-blur-xl overflow-hidden relative">
         <div className="absolute top-0 right-0 w-64 h-64 bg-pink-100/50 rounded-full filter blur-[80px] pointer-events-none"></div>
         <div className="overflow-x-auto relative z-10 w-full rounded-[2rem]">
-          <table className="w-full min-w-[700px] text-left border-collapse">
+          {/* Desktop Table - Hidden on Mobile */}
+          <table className="hidden md:table w-full min-w-[700px] text-left border-collapse">
             <thead className="bg-rose-50 border-b border-rose-200">
               <tr>
                 <th className="px-5 py-5 w-10">
@@ -329,6 +330,66 @@ export default function ManageProducts() {
               )}
             </tbody>
           </table>
+
+          {/* Mobile Card Layout - Hidden on Desktop */}
+          <div className="md:hidden divide-y divide-rose-100">
+            {loading ? (
+              <div className="px-6 py-12 text-center text-rose-600 font-bold flex flex-col items-center gap-3">
+                <div className="w-6 h-6 border-4 border-rose-300 border-t-transparent rounded-full animate-spin"></div>
+                Syncing Inventory...
+              </div>
+            ) : products.length === 0 ? (
+              <div className="px-6 py-12 text-center text-rose-500 font-medium">No masterpieces found.</div>
+            ) : (
+              products.map(product => (
+                <div key={product.id} className={`p-4 flex flex-col gap-4 animate-fade-in-up ${selectedItems.includes(product.id) ? 'bg-pink-50/30' : ''}`}>
+                  <div className="flex gap-4">
+                    <div className="relative">
+                      <img src={product.image} alt={product.name} className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-2xl shadow-sm border border-rose-100" />
+                      <input 
+                        type="checkbox" 
+                        checked={selectedItems.includes(product.id)} 
+                        onChange={() => handleSelect(product.id)} 
+                        className="absolute -top-2 -left-2 w-6 h-6 rounded-full border-rose-300 accent-pink-500 shadow-sm" 
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-start gap-2">
+                        <h4 className="font-black text-rose-950 text-base leading-tight truncate">{product.name}</h4>
+                        <span className="shrink-0 px-2.5 py-1 bg-rose-50 text-rose-500 rounded-lg text-[9px] font-black uppercase tracking-widest border border-rose-100">{product.category || 'General'}</span>
+                      </div>
+                      
+                      <div className="mt-2 flex flex-col">
+                        <span className={`font-black text-sm ${product.discount > 0 ? 'text-rose-300 line-through text-[10px]' : 'text-rose-600'}`}>Rs. {parseFloat(product.price).toFixed(0)}</span>
+                        {product.discount > 0 && <span className="font-black text-rose-600 text-sm">Rs. {Math.floor(product.price * (1 - product.discount / 100))}</span>}
+                      </div>
+
+                      <div className="mt-3 flex items-center justify-between">
+                         <div className="flex items-center gap-2">
+                            <button 
+                              onClick={() => handleToggleStock(product.id, product.inStock !== false)}
+                              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none ${product.inStock !== false ? 'bg-emerald-500' : 'bg-rose-300'}`}
+                            >
+                              <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${product.inStock !== false ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                            </button>
+                            <span className={`text-[10px] font-black uppercase tracking-widest ${product.inStock !== false ? 'text-emerald-600' : 'text-rose-400'}`}>
+                              {product.inStock !== false ? 'Live' : 'Sold'}
+                            </span>
+                         </div>
+                         <div className="flex items-center gap-3">
+                           <button onClick={() => handleEdit(product)} className="text-[10px] font-black text-sky-600 uppercase tracking-widest bg-sky-50 px-3 py-1.5 rounded-lg border border-sky-100">Edit</button>
+                           <button 
+                             onClick={() => setProductToDelete({id: product.id, imageUrl: product.image})}
+                             className="text-[10px] font-black text-red-500 uppercase tracking-widest bg-red-50 px-3 py-1.5 rounded-lg border border-red-100"
+                           >Delete</button>
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
 

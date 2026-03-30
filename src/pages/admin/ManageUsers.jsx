@@ -123,18 +123,20 @@ export default function ManageUsers() {
                               <p className="text-[10px] text-rose-400 font-bold uppercase tracking-wider">UID: {user.id.slice(0, 8)}...</p>
                            </div>
                         </div>
-                        <div className="md:col-span-2 text-rose-800 font-black text-[10px] sm:text-xs uppercase tracking-widest bg-white/50 px-3 py-1.5 rounded-lg border border-rose-100">
-                          Joined {formatDate(user.createdAt)}
-                        </div>
-                        <div className="md:col-span-2">
-                           <span className="font-black text-emerald-600 text-sm">
-                             Rs. {user.totalSpent.toLocaleString()}
-                           </span>
-                        </div>
-                        <div className="md:col-span-2">
-                           <span className="font-bold text-rose-500 text-[10px] sm:text-xs uppercase tracking-widest">
-                             {user.orders.length} Order{user.orders.length !== 1 ? 's' : ''}
-                           </span>
+                        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto md:col-span-6 md:justify-between">
+                          <div className="text-rose-800 font-black text-[10px] sm:text-xs uppercase tracking-widest bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-100">
+                            Joined {formatDate(user.createdAt)}
+                          </div>
+                          <div>
+                             <span className="font-black text-rose-600 text-sm bg-pink-50 px-2 py-1 rounded-md border border-pink-100">
+                               Rs. {user.totalSpent.toLocaleString()}
+                             </span>
+                          </div>
+                          <div>
+                             <span className="font-bold text-rose-500 text-[10px] uppercase tracking-widest">
+                               {user.orders.length} Order{user.orders.length !== 1 ? 's' : ''}
+                             </span>
+                          </div>
                         </div>
                         <div className="hidden md:block md:col-span-1 text-right">
                            <button className={`w-8 h-8 rounded-full flex justify-center items-center bg-white border border-rose-200 text-rose-500 group-hover:bg-rose-50 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>

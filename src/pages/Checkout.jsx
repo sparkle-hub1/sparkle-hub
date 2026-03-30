@@ -5,14 +5,12 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 
-// Ultra-premium 15-character verification ID generator
 const generateCustomId = () => {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     for ( let i = 0; i < 15; i++ ) {
         result += characters.charAt(Math.floor(Math.random() * characters.length));
     }
-    // Prefix to ensure visually distinct format if necessary, but purely 15 chars requested
     return result;
 };
 
@@ -21,7 +19,6 @@ export default function Checkout() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
-  // Delivery charged ONCE per unique product (not multiplied by quantity)
   const totalDelivery = cart.reduce((sum, item) => sum + (item.deliveryCharge || 0), 0);
   const grandTotal = cartTotal + totalDelivery;
 
@@ -50,114 +47,88 @@ export default function Checkout() {
         items: cart,
         totalAmount: grandTotal,
         deliveryCharges: totalDelivery,
-        paymentScreenshot: null, // to be populated in Step 2
+        paymentScreenshot: null,
         customPictures: customPictures || [],
         orderStatus: 'Awaiting Payment',
         createdAt: serverTimestamp()
       };
 
-      // Create early order record using custom 15-char tracker
       const customId = generateCustomId();
       await setDoc(doc(db, 'orders', customId), orderData);
-      
-      // Save it as the active session draft
       setActiveOrderId(customId);
-      
-      // Do NOT clear cart yet. Proceed to payment step.
       navigate('/payment', { state: { orderId: customId, grandTotal: grandTotal } });
     } catch (error) {
       console.error("Error processing checkout:", error);
-      alert('Failed to initialize booking. Please check your connection.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="max-w-6xl mx-auto w-full pt-4 md:pt-10 flex flex-col md:flex-row gap-10 text-rose-950 px-4">
+    <div className="max-w-6xl mx-auto w-full pt-4 md:pt-10 pb-20 flex flex-col lg:flex-row gap-8 lg:gap-14 text-rose-950 px-4">
       
       {/* Checkout Form */}
-      <div className="flex-1 bg-white/95 border border-white p-8 md:p-12 rounded-[3rem] backdrop-blur-xl shadow-[0_20px_60px_rgba(255,228,230,0.8)] relative overflow-hidden">
-        {/* Soft Decorative gradient */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-pink-100/50 rounded-full mix-blend-multiply filter blur-[80px] -z-10 animate-pulse"></div>
+      <div className="flex-1 bg-white/95 border border-white p-6 sm:p-14 rounded-[2.5rem] sm:rounded-[4rem] backdrop-blur-xl shadow-[0_30px_70px_rgba(255,228,230,0.6)] relative overflow-hidden order-2 lg:order-1">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-pink-100/30 rounded-full blur-[80px] -z-10"></div>
         
-        <h2 className="text-3xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-500 tracking-tight">Secure Finalization</h2>
-        <p className="text-rose-800/70 font-medium mb-10">Please enter your shipping destination exactly as recorded.</p>
+        <div className="mb-8 sm:mb-14">
+          <h2 className="text-[1.8rem] sm:text-5xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-500 tracking-tight leading-tight">Secure Finalization</h2>
+          <p className="text-rose-800/60 font-bold uppercase tracking-widest text-[10px] sm:text-sm">Verify your shipping destination</p>
+        </div>
         
-        <form onSubmit={handleCheckout} className="space-y-6">
+        <form onSubmit={handleCheckout} className="space-y-6 sm:space-y-8">
           <div>
-            <label className="block text-xs font-bold text-rose-500 mb-2 uppercase tracking-widest pl-2">Full Name</label>
-            <input name="name" value={formData.name} onChange={handleChange} required type="text" className="w-full bg-rose-50/50 border border-rose-200 rounded-2xl px-6 py-4 text-rose-900 focus:outline-none focus:border-pink-400 focus:bg-white focus:ring-4 focus:ring-pink-100/50 transition-all font-bold placeholder-rose-300 shadow-inner" placeholder="E.g. Maryam's Custom" />
+            <label className="block text-[10px] sm:text-xs font-black text-rose-400 mb-2 uppercase tracking-[0.2em] pl-1">Full Name</label>
+            <input name="name" value={formData.name} onChange={handleChange} required type="text" className="w-full bg-rose-50/50 border border-rose-100 rounded-2xl px-6 py-4 sm:py-5 text-sm sm:text-lg focus:outline-none focus:border-pink-300 focus:bg-white transition-all font-black placeholder-rose-200 shadow-inner" placeholder="E.g. Maryam Noor" />
           </div>
           <div>
-            <label className="block text-xs font-bold text-rose-500 mb-2 uppercase tracking-widest pl-2">Contact Number</label>
-            <input name="phone" value={formData.phone} onChange={handleChange} required type="tel" className="w-full bg-rose-50/50 border border-rose-200 rounded-2xl px-6 py-4 text-rose-900 focus:outline-none focus:border-pink-400 focus:bg-white focus:ring-4 focus:ring-pink-100/50 transition-all font-bold placeholder-rose-300 shadow-inner" placeholder="+123 456 7890" />
+            <label className="block text-[10px] sm:text-xs font-black text-rose-400 mb-2 uppercase tracking-[0.2em] pl-1">Contact Number</label>
+            <input name="phone" value={formData.phone} onChange={handleChange} required type="tel" className="w-full bg-rose-50/50 border border-rose-100 rounded-2xl px-6 py-4 sm:py-5 text-sm sm:text-lg focus:outline-none focus:border-pink-300 focus:bg-white transition-all font-black placeholder-rose-200 shadow-inner" placeholder="+923..." />
           </div>
           <div>
-            <label className="block text-xs font-bold text-rose-500 mb-2 uppercase tracking-widest pl-2">Delivery Address</label>
-            <textarea name="address" value={formData.address} onChange={handleChange} required rows="3" className="w-full bg-rose-50/50 border border-rose-200 rounded-2xl px-6 py-4 text-rose-900 focus:outline-none focus:border-pink-400 focus:bg-white focus:ring-4 focus:ring-pink-100/50 transition-all font-bold placeholder-rose-300 shadow-inner" placeholder="Complete address including ZIP"></textarea>
+            <label className="block text-[10px] sm:text-xs font-black text-rose-400 mb-2 uppercase tracking-[0.2em] pl-1">Delivery Address</label>
+            <textarea name="address" value={formData.address} onChange={handleChange} required rows="3" className="w-full bg-rose-50/50 border border-rose-100 rounded-2xl px-6 py-4 sm:py-5 text-sm sm:text-lg focus:outline-none focus:border-pink-300 focus:bg-white transition-all font-black placeholder-rose-200 shadow-inner" placeholder="Complete address..."></textarea>
           </div>
 
-          <div className="bg-gradient-to-br from-rose-50 to-pink-50 p-6 sm:p-8 rounded-[2rem] border border-pink-200 shadow-sm mt-8 relative overflow-hidden flex items-center gap-4">
-             {/* Overlay pattern or glow */}
-             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-pink-200/40 rounded-full blur-[40px]"></div>
-             
-             <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-rose-500 shadow-sm shrink-0 relative z-10">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          <div className="bg-rose-50/50 p-6 rounded-3xl border border-rose-100/50 shadow-inner flex items-center gap-4">
+             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-rose-400 shadow-sm shrink-0">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
              </div>
-             <p className="text-rose-900 font-bold text-sm relative z-10">
-               Clicking proceed will securely reserve these items under your details and route you to our verified Payment Gateway.
+             <p className="text-rose-800/70 font-bold text-[10px] sm:text-xs uppercase tracking-widest leading-relaxed">
+               Secure reservation will be initiated upon proceeding to payment.
              </p>
           </div>
 
           <button 
             type="submit" 
             disabled={isSubmitting}
-            className="w-full py-6 mt-10 bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 rounded-[1.5rem] font-black text-xl lg:text-2xl shadow-[0_15px_30px_rgba(244,114,182,0.3)] transition-all transform hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(244,114,182,0.4)] text-white disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-3 active:scale-95"
+            className="w-full py-5 sm:py-7 mt-6 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl sm:rounded-3xl font-black text-lg sm:text-3xl shadow-[0_15px_35px_rgba(244,114,182,0.4)] transition-all transform active:scale-95 disabled:opacity-50 flex justify-center items-center gap-3 outline-none"
           >
-            {isSubmitting ? (
-              <>
-                <span className="w-6 h-6 border-4 border-white/50 border-t-white rounded-full animate-spin"></span>
-                Generating Invoice...
-              </>
-            ) : 'Proceed & Finalize Payment'}
+            {isSubmitting ? <span className="w-6 h-6 border-4 border-white/50 border-t-white rounded-full animate-spin"></span> : 'Proceed & Finalize ➔'}
           </button>
         </form>
       </div>
 
       {/* Order Summary Sidebar */}
-      <div className="w-full md:w-96 shrink-0 bg-white/95 border border-white rounded-[3rem] p-10 h-fit sticky top-28 shadow-[0_20px_60px_rgba(255,228,230,0.8)] backdrop-blur-xl">
-        <h3 className="text-2xl font-black mb-8 text-rose-950 border-b border-rose-100 pb-4">Order Summary</h3>
-        <div className="space-y-6 mb-8 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
+      <div className="w-full lg:w-96 shrink-0 bg-white/95 border border-white rounded-[2.5rem] p-8 sm:p-12 h-fit lg:sticky lg:top-28 shadow-[0_20px_50px_rgba(255,228,230,0.5)] backdrop-blur-xl order-1 lg:order-2">
+        <h3 className="text-xl sm:text-2xl font-black mb-8 text-rose-950 border-b border-rose-100 pb-4 uppercase tracking-widest text-center lg:text-left">Your Order</h3>
+        <div className="space-y-4 mb-10 max-h-[30vh] lg:max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
           {cart.map(item => (
-            <div key={item.id} className="flex items-center gap-5 bg-rose-50/50 p-4 rounded-2xl border border-rose-100/50 shadow-sm">
-              <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-xl shadow-sm border border-rose-50" />
+            <div key={item.id} className="flex items-center gap-4 bg-rose-50/30 p-2 sm:p-4 rounded-xl border border-rose-100/30">
+              <img src={item.image} alt={item.name} className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-xl shadow-sm border border-white" />
               <div className="flex-1">
-                <p className="font-bold text-sm text-rose-950 line-clamp-1">{item.name}</p>
-                <p className="text-xs text-rose-500 font-medium mt-1">
-                  Qty: {item.quantity} 
-                  {item.variation && <span className="font-bold text-pink-700 bg-pink-100 px-2 py-0.5 rounded-lg border border-pink-200 ml-2">{item.variation}</span>}
-                </p>
-                <p className="text-pink-500 font-black mt-2">${(item.price * item.quantity).toFixed(2)}</p>
+                <p className="font-black text-[10px] sm:text-sm text-rose-950 line-clamp-1">{item.name}</p>
+                <p className="text-[8px] sm:text-[11px] text-rose-400 font-bold mt-1">Qty: {item.quantity}</p>
+                <p className="text-rose-500 font-black mt-1 text-xs sm:text-base">PKR {(item.price * item.quantity).toFixed(0)}</p>
               </div>
             </div>
           ))}
         </div>
-        <div className="border-t border-rose-100 pt-8">
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-rose-800/80 font-medium">Subtotal</span>
-            <span className="font-bold text-rose-950">Rs. {cartTotal.toFixed(0)}</span>
-          </div>
-          <div className="flex justify-between items-center mb-8">
-            <span className="text-rose-800/80 font-medium">Delivery</span>
-            {totalDelivery > 0
-              ? <span className="font-bold text-amber-600">Rs. {totalDelivery.toFixed(0)}</span>
-              : <span className="font-bold text-emerald-500">Free 🎁</span>
-            }
-          </div>
-          <div className="flex justify-between items-center bg-rose-50/50 -mx-10 -mb-10 p-10 border-t border-rose-100 rounded-b-[3rem]">
-            <span className="text-xl font-bold text-rose-950">Total</span>
-            <span className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-500 tracking-tight">Rs. {grandTotal.toFixed(0)}</span>
+        
+        <div className="border-t border-rose-100 pt-8 space-y-3">
+          <div className="flex justify-between items-center bg-rose-50/50 -mx-8 sm:-mx-12 -mb-8 sm:-mb-12 p-8 sm:p-12 border-t border-rose-100 rounded-b-[2.5rem]">
+            <span className="text-xs sm:text-base font-black text-rose-400 uppercase tracking-widest">Total Pay</span>
+            <span className="text-2xl sm:text-4xl font-black text-rose-600 tracking-tight">PKR {grandTotal.toFixed(0)}</span>
           </div>
         </div>
       </div>

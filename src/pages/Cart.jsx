@@ -12,13 +12,12 @@ export default function Cart() {
   const [isUploading, setIsUploading] = useState(false);
   const [isUpdatingOrder, setIsUpdatingOrder] = useState(false);
 
-  // Delivery charged ONCE per unique product (not multiplied by quantity)
+  // Delivery charged ONCE per unique product
   const totalDelivery = cart.reduce((sum, item) => sum + (item.deliveryCharge || 0), 0);
   const grandTotal = cartTotal + totalDelivery;
   const navigate = useNavigate();
 
   const handleCheckoutNavigation = async () => {
-    // If they already have an active unpaid draft, update it and skip checkout details!
     if (activeOrderId) {
        setIsUpdatingOrder(true);
        try {
@@ -32,7 +31,6 @@ export default function Cart() {
          navigate('/payment', { state: { orderId: activeOrderId, grandTotal: grandTotal } });
        } catch (error) {
          console.error("Failed to sync active order:", error);
-         alert("Failed to sync your cart with your draft. Please try again.");
        } finally {
          setIsUpdatingOrder(false);
        }
@@ -44,11 +42,7 @@ export default function Cart() {
   const handlePictureUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    if (customPictures.length >= 5) {
-      alert("You can only upload up to 5 pictures per order.");
-      return;
-    }
+    if (customPictures.length >= 5) return;
 
     setIsUploading(true);
     try {
@@ -67,7 +61,6 @@ export default function Cart() {
       }
     } catch (err) {
       console.error("Error uploading image:", err);
-      alert("Failed to upload picture. Please try again.");
     } finally {
       setIsUploading(false);
       e.target.value = '';
@@ -76,86 +69,98 @@ export default function Cart() {
 
   if (cart.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 animate-fade-in-up">
-        <div className="w-24 h-24 bg-rose-100 rounded-full flex items-center justify-center mb-8 shadow-inner border border-rose-200">
-          <svg className="w-12 h-12 text-rose-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <div className="flex flex-col items-center justify-center min-h-[70vh] text-center px-6 animate-fade-in-up">
+        <div className="w-20 h-20 sm:w-24 sm:h-24 bg-rose-100 rounded-full flex items-center justify-center mb-6 sm:mb-8 shadow-inner border border-rose-200">
+          <svg className="w-10 h-10 sm:w-12 sm:h-12 text-rose-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
         </div>
-        <h2 className="text-3xl font-extrabold mb-4 text-rose-950">Your cart is beautifully empty</h2>
-        <p className="text-rose-800/70 mb-8 max-w-md">Looks like you haven't added any elegant resin pieces to your cart yet.</p>
-        <Link to="/products" className="px-10 py-4 bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 rounded-full font-bold text-lg shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-          Explore Collection
+        <h2 className="text-2xl sm:text-3xl font-black mb-3 text-rose-950">Your cart is empty</h2>
+        <p className="text-rose-800/60 mb-8 max-w-xs sm:max-w-md font-medium text-sm sm:text-base italic">"Beauty is in the eye of the holder, but your cart has nothing to hold yet."</p>
+        <Link to="/products" className="px-10 py-4 bg-rose-500 text-white rounded-full font-black text-lg shadow-lg hover:shadow-xl transition-all active:scale-95">
+          Start Shopping
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto w-full pt-10 px-4 text-rose-950">
-      <h1 className="text-4xl md:text-5xl font-black mb-10 text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-500 tracking-tight">Your Cart</h1>
+    <div className="max-w-6xl mx-auto w-full pt-6 md:pt-14 pb-20 px-4 text-rose-950">
+      <div className="flex flex-col mb-8 sm:mb-12">
+        <h1 className="text-3xl sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-500 tracking-tight leading-none">Your Cart</h1>
+        <p className="text-rose-400 font-bold uppercase tracking-widest text-[10px] sm:text-sm mt-2">{cart.length} Masterpieces selected</p>
+      </div>
       
-      <div className="flex flex-col lg:flex-row gap-10">
-        <div className="flex-1 space-y-6">
+      <div className="flex flex-col lg:flex-row gap-8 sm:gap-14">
+        <div className="flex-1 space-y-4 sm:space-y-6">
           {cart.map(item => (
-            <div key={item.id} className="bg-white/90 border border-rose-100 rounded-3xl p-4 sm:p-6 backdrop-blur-md flex flex-col sm:flex-row items-center gap-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-              <img src={item.image} alt={item.name} className="w-full sm:w-32 h-32 object-cover rounded-2xl border border-rose-50" />
-              
-              <div className="flex-1 text-center sm:text-left">
-                <h3 className="text-xl font-bold text-rose-950 mb-2">{item.name}</h3>
-                <p className="text-pink-600 text-sm font-bold mb-4 bg-pink-50 inline-block px-3 py-1.5 rounded-xl border border-pink-100 shadow-sm">
-                  {item.variation ? `Variant: ${item.variation}` : 'Standard Edition'}
-                </p>
-                <div className="flex items-center justify-center sm:justify-start gap-4">
-                  <div className="flex items-center bg-rose-50 rounded-xl border border-rose-100 p-1 shadow-inner">
-                    <button 
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="w-8 h-8 flex items-center justify-center text-rose-500 hover:bg-white rounded-lg font-bold transition-colors shadow-sm"
-                    >-</button>
-                    <span className="w-10 text-center font-bold text-rose-900">{item.quantity}</span>
-                    <button 
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="w-8 h-8 flex items-center justify-center text-rose-500 hover:bg-white rounded-lg font-bold transition-colors shadow-sm"
-                    >+</button>
-                  </div>
-                  <button 
-                    onClick={() => setItemToRemove(item)}
-                    className="text-rose-400 hover:text-red-500 text-sm font-bold underline transition-colors"
-                  >
-                    Remove
-                  </button>
-                </div>
+            <div key={item.id} className="bg-white/95 border border-white rounded-[1.5rem] sm:rounded-[2.5rem] p-3 sm:p-7 backdrop-blur-md flex items-center gap-4 sm:gap-8 shadow-[0_10px_30px_rgba(255,228,230,0.3)] relative group overflow-hidden">
+              <div className="w-20 h-20 sm:w-40 sm:h-40 shrink-0 bg-rose-50 rounded-xl sm:rounded-3xl overflow-hidden border border-rose-100 shadow-inner">
+                <img src={item.image} alt={item.name} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" />
               </div>
               
-              <div className="text-2xl font-black text-rose-500 sm:items-end">
-                PKR {(item.price * item.quantity).toFixed(0)}
+              <div className="flex-1 flex flex-col justify-between h-full py-1">
+                <div>
+                  <h3 className="text-sm sm:text-2xl font-black text-rose-950 line-clamp-1 leading-tight mb-1 sm:mb-2">{item.name}</h3>
+                  <div className="flex flex-wrap gap-2 mb-2 sm:mb-4">
+                    <span className="text-[8px] sm:text-[11px] font-black text-rose-500 bg-rose-50 px-2 sm:px-4 py-0.5 sm:py-1 rounded-full border border-rose-100 uppercase tracking-widest">
+                       {item.variation || 'Standard'}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between mt-auto">
+                  <div className="flex items-center bg-rose-50/50 rounded-lg sm:rounded-2xl border border-rose-100 p-0.5 sm:p-1.5 shadow-inner">
+                    <button 
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      className="w-6 h-6 sm:w-10 sm:h-10 flex items-center justify-center text-rose-500 hover:bg-white rounded-md sm:rounded-xl font-bold transition-all shadow-sm active:scale-90"
+                    >—</button>
+                    <span className="w-6 sm:w-12 text-center font-black text-xs sm:text-xl text-rose-900">{item.quantity}</span>
+                    <button 
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      className="w-6 h-6 sm:w-10 sm:h-10 flex items-center justify-center text-rose-500 hover:bg-white rounded-md sm:rounded-xl font-bold transition-all shadow-sm active:scale-90"
+                    >+</button>
+                  </div>
+                  
+                  <div className="text-right flex flex-col items-end">
+                    <p className="text-[10px] sm:text-xs font-black text-rose-300 uppercase tracking-widest mb-0.5 sm:mb-1">Subtotal</p>
+                    <p className="text-sm sm:text-2xl font-black text-rose-600">PKR {(item.price * item.quantity).toFixed(0)}</p>
+                    <button 
+                      onClick={() => setItemToRemove(item)}
+                      className="mt-2 text-rose-400 hover:text-red-500 text-[8px] sm:text-xs font-black uppercase tracking-widest underline transition-colors outline-none"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
 
           {/* Custom Picture Uploads Section */}
-          <div className="mt-8 bg-rose-50/50 p-6 md:p-8 rounded-[2rem] border border-rose-100 shadow-sm relative overflow-hidden">
-             <h3 className="text-xl font-black text-rose-950 mb-2">Have a specific design?</h3>
-             <p className="text-sm font-medium text-rose-800/80 mb-6">Attach pictures for our resin artists (Max 5 items. Optional.)</p>
+          <div className="mt-8 bg-rose-50/40 p-5 sm:p-10 rounded-[1.8rem] sm:rounded-[3.5rem] border border-rose-100/50 shadow-inner relative overflow-hidden">
+             <div className="absolute top-0 right-0 w-32 h-32 bg-pink-100/30 rounded-full blur-[40px]"></div>
+             <h3 className="text-lg sm:text-2xl font-black text-rose-950 mb-1 sm:mb-2">Custom Design?</h3>
+             <p className="text-[10px] sm:text-sm font-bold text-rose-800/60 mb-6 uppercase tracking-widest">Attach up to 5 reference photos (Optional)</p>
              
-             <div className="flex flex-wrap gap-4 items-center">
+             <div className="flex flex-wrap gap-3 sm:gap-6 items-center">
                 {customPictures.map((pic, idx) => (
-                  <div key={idx} className="relative group w-24 h-24 rounded-2xl overflow-hidden shadow-inner border border-white shrink-0">
+                  <div key={idx} className="relative group w-16 h-16 sm:w-28 sm:h-28 rounded-xl sm:rounded-[1.5rem] overflow-hidden shadow-md border-2 border-white shrink-0 animate-fade-in">
                     <img src={pic} alt="Custom Ref" className="w-full h-full object-cover" />
                     <button onClick={() => setPictureToRemoveIndex(idx)} className="absolute inset-0 bg-red-500/80 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm outline-none">
-                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      <svg className="w-6 h-6 sm:w-10 sm:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                     </button>
                   </div>
                 ))}
                 
                 {customPictures.length < 5 && (
-                  <label className="w-24 h-24 rounded-2xl border-2 border-dashed border-rose-300 flex flex-col items-center justify-center text-rose-400 hover:text-rose-600 hover:bg-white hover:border-pink-400 transition-all cursor-pointer relative overflow-hidden shadow-sm outline-none shrink-0 bg-white/50">
+                  <label className="w-16 h-16 sm:w-28 sm:h-28 rounded-xl sm:rounded-[1.5rem] border-2 border-dashed border-rose-200 flex flex-col items-center justify-center text-rose-300 hover:text-rose-500 hover:bg-white hover:border-pink-300 transition-all cursor-pointer relative overflow-hidden shadow-sm outline-none shrink-0 bg-white/40 active:scale-95">
                     {isUploading ? (
-                       <div className="w-6 h-6 border-4 border-pink-400 border-t-transparent rounded-full animate-spin"></div>
+                       <div className="w-5 h-5 sm:w-8 sm:h-8 border-4 border-pink-400 border-t-transparent rounded-full animate-spin"></div>
                     ) : (
                        <>
-                         <span className="text-2xl mt-1">+</span>
-                         <span className="text-[10px] font-bold uppercase tracking-widest mt-1">Upload</span>
+                         <span className="text-xl sm:text-3xl font-black">+</span>
+                         <span className="text-[7px] sm:text-[10px] font-black uppercase tracking-widest mt-0.5 sm:mt-1">Add Image</span>
                        </>
                     )}
                     <input type="file" accept="image/*" onChange={handlePictureUpload} className="hidden" disabled={isUploading} />
@@ -163,80 +168,51 @@ export default function Cart() {
                 )}
              </div>
           </div>
-
-          {/* Continue Shopping Button */}
-          <div className="pt-6">
-            <Link to="/products" className="group inline-flex items-center gap-3 px-8 py-4 bg-rose-50 hover:bg-rose-100 border border-rose-200 hover:border-pink-300 rounded-2xl font-black text-rose-700 shadow-sm transition-all hover:shadow-md outline-none">
-              <span className="text-2xl group-hover:-translate-x-2 transition-transform">&larr;</span> 
-              Continue Shopping
-            </Link>
-          </div>
         </div>
         
-        <div className="w-full lg:w-96 shrink-0 h-fit sticky top-28 bg-white/90 border border-rose-100 rounded-[2rem] p-8 shadow-[0_20px_40px_rgba(255,228,230,0.5)] backdrop-blur-xl">
-          <h3 className="text-xl font-black mb-6 text-rose-900 border-b border-rose-100 pb-4">Order Summary</h3>
-          <div className="space-y-4 mb-8">
-            <div className="flex justify-between items-center text-rose-800">
-              <span className="font-medium">Subtotal ({cart.length} items)</span>
-              <span className="font-bold">PKR {cartTotal.toFixed(0)}</span>
+        {/* Summary Card */}
+        <div className="w-full lg:w-[400px] shrink-0 h-fit lg:sticky lg:top-28 bg-white/95 border border-white rounded-[2rem] sm:rounded-[3.5rem] p-6 sm:p-10 shadow-[0_20px_50px_rgba(255,228,230,0.6)] backdrop-blur-xl">
+          <h3 className="text-xl sm:text-2xl font-black mb-8 text-rose-950 border-b border-rose-100 pb-4">Order Summary</h3>
+          
+          <div className="space-y-4 mb-10">
+            <div className="flex justify-between items-center">
+              <span className="text-rose-500 font-bold uppercase tracking-widest text-xs">Items ({cart.length})</span>
+              <span className="font-black text-rose-950 sm:text-xl">PKR {cartTotal.toFixed(0)}</span>
             </div>
-            <div className="flex justify-between items-center text-rose-800">
-              <span className="font-medium">Delivery Charges</span>
+            <div className="flex justify-between items-center">
+              <span className="text-rose-500 font-bold uppercase tracking-widest text-xs">Fragile Delivery</span>
               {totalDelivery > 0
-                ? <span className="font-bold text-amber-600">PKR {totalDelivery.toFixed(0)}</span>
-                : <span className="font-bold text-emerald-500">Free 🎁</span>
+                ? <span className="font-black text-amber-600 sm:text-xl">PKR {totalDelivery.toFixed(0)}</span>
+                : <span className="font-black text-emerald-500 bg-emerald-50 px-3 py-1 rounded-full text-xs">FREE 🎁</span>
               }
             </div>
           </div>
-          <div className="border-t border-rose-100 pt-6 mb-8 flex items-center justify-between">
-            <span className="text-lg font-black text-rose-950">Grand Total</span>
-            <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-500">PKR {grandTotal.toFixed(0)}</span>
+          
+          <div className="bg-rose-50/50 -mx-6 sm:-mx-10 px-6 sm:px-10 py-6 sm:py-8 mb-8 border-y border-rose-100">
+            <div className="flex items-center justify-between">
+              <span className="text-sm sm:text-base font-black text-rose-400 uppercase tracking-widest">Grand Total</span>
+              <span className="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-500 drop-shadow-sm">PKR {grandTotal.toFixed(0)}</span>
+            </div>
           </div>
+          
           <button 
             onClick={handleCheckoutNavigation}
             disabled={isUpdatingOrder}
-            className="w-full py-5 bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white rounded-2xl font-black text-xl shadow-[0_10px_20px_rgba(244,114,182,0.3)] transition-all transform hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(244,114,182,0.4)] outline-none disabled:opacity-50 flex justify-center items-center gap-2"
+            className="w-full py-5 sm:py-7 bg-rose-500 hover:bg-rose-600 active:bg-rose-700 text-white rounded-2xl sm:rounded-[2rem] font-black text-xl sm:text-2xl shadow-[0_15px_35px_rgba(244,114,182,0.4)] transition-all transform hover:-translate-y-1 outline-none disabled:opacity-50 flex justify-center items-center gap-3"
           >
             {isUpdatingOrder ? (
                <>
-                 <span className="w-5 h-5 border-4 border-white/50 border-t-white rounded-full animate-spin"></span>
+                 <span className="w-6 h-6 border-4 border-white/50 border-t-white rounded-full animate-spin"></span>
                  Syncing...
                </>
             ) : activeOrderId ? (
-               <>Update & Make Payment <span className="text-2xl ml-1">🚀</span></>
+               <>Confirm & Pay <span className="text-2xl">➔</span></>
             ) : (
-               <>Secure Checkout <span className="text-xl ml-1">🔒</span></>
+               <>Secure Checkout <span className="text-2xl">🔒</span></>
             )}
           </button>
-
-          {/* Social Contact Section */}
-          <div className="mt-8 pt-6 border-t border-rose-100/50">
-            <p className="text-center text-rose-800/80 font-bold mb-4 text-sm uppercase tracking-widest">Need Help?</p>
-            <div className="flex flex-col gap-3">
-              <a 
-                href="https://wa.me/923238750695" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 w-full py-3.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 rounded-xl font-bold transition-all hover:shadow-sm group outline-none"
-              >
-                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.513-18.396A11.838 11.838 0 0012.052.011C5.464.011.109 5.365.106 11.954c0 2.103.549 4.156 1.593 5.968L0 24l6.236-1.636a11.868 11.868 0 005.816 1.517h.005c6.587 0 11.942-5.354 11.946-11.943a11.84 11.84 0 00-3.484-8.444z" />
-                </svg>
-                Contact Now
-              </a>
-              <a 
-                href="https://www.instagram.com/elegent_sparkle_hub_?igsh=Y3Jud2poZ2c5bWow" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 w-full py-3.5 bg-gradient-to-br from-indigo-50 via-fuchsia-50 to-pink-50 hover:from-indigo-100 hover:via-fuchsia-100 hover:to-pink-100 text-fuchsia-700 border border-fuchsia-200 rounded-xl font-bold transition-all hover:shadow-sm group outline-none"
-              >
-                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.20 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
-                </svg>
-                DM on Instagram
-              </a>
-            </div>
-          </div>
+          
+          <p className="text-center text-[9px] sm:text-xs font-bold text-rose-300 mt-6 uppercase tracking-widest">Handcrafted with love in Pakistan 🇵🇰</p>
         </div>
       </div>
 
@@ -245,8 +221,8 @@ export default function Cart() {
         onClose={() => setItemToRemove(null)}
         onConfirm={() => removeItem(itemToRemove?.id)}
         title="Remove Item?"
-        message={`Are you sure you want to remove this masterpiece from your cart?`}
-        confirmText="Remove Item"
+        message={`Are you sure you want to remove this masterpiece?`}
+        confirmText="Yes, Remove"
         confirmColor="rose"
       />
 
@@ -258,8 +234,8 @@ export default function Cart() {
           setPictureToRemoveIndex(null);
         }}
         title="Remove Picture?"
-        message="Are you sure you want to remove this attached picture from your order?"
-        confirmText="Remove Picture"
+        message="Are you sure you want to remove this attached picture?"
+        confirmText="Yes, Remove"
         confirmColor="rose"
       />
     </div>

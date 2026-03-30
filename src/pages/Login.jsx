@@ -282,16 +282,6 @@ export default function Login() {
             )}
           </div>
         </div>
-        
-        {/* Footer Link */}
-        <div className="text-center mt-10">
-          <p className="text-[10px] sm:text-xs font-black text-rose-300 uppercase tracking-[0.2em] mb-4">By continuing you agree to our</p>
-          <div className="flex justify-center gap-4">
-            <a href="/terms" className="text-rose-400 hover:text-pink-500 font-bold text-xs">Terms</a>
-            <span className="text-rose-100">•</span>
-            <a href="/privacy" className="text-rose-400 hover:text-pink-500 font-bold text-xs">Privacy</a>
-          </div>
-        </div>
       </div>
     </div>
   );

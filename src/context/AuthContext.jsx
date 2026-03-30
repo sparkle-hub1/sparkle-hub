@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { auth, db, googleProvider } from '../firebase';
 import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, signInWithPopup } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { sendWelcomeEmail } from '../utils/emailService';
 
 const AuthContext = createContext();
 
@@ -30,6 +31,14 @@ export function AuthProvider({ children }) {
       role: 'Customer',
       createdAt: new Date().toISOString(),
     }, { merge: true });
+
+    // Send professional welcome email
+    try {
+      await sendWelcomeEmail(email, fullName);
+    } catch (err) {
+      console.error("Welcome email failed:", err);
+    }
+
     return userCredential;
   }
 
@@ -45,12 +54,20 @@ export function AuthProvider({ children }) {
     const userDocSnap = await getDoc(userDocRef);
     
     if (!userDocSnap.exists()) {
+      const name = user.displayName || 'Google User';
       await setDoc(userDocRef, {
-        name: user.displayName || 'Google User',
+        name: name,
         email: user.email,
         role: 'Customer',
         createdAt: new Date().toISOString(),
       });
+
+      // Send professional welcome email to NEW Google users ONLY
+      try {
+        await sendWelcomeEmail(user.email, name);
+      } catch (err) {
+        console.error("Welcome email failed:", err);
+      }
     }
     return result;
   }

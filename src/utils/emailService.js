@@ -88,15 +88,28 @@ export async function sendOrderStatusEmail(toEmail, toName, orderId, grandTotal,
       status_message: `Your Sparkle Hub masterpiece has been delivered successfully! We hope you absolutely love your handcrafted resin artwork. Thank you for choosing Sparkle Hub 💖`,
       next_step: 'Enjoy your beautiful new masterpiece!',
     },
+    Welcome: {
+      header_gradient: 'linear-gradient(135deg, #f472b6, #db2777)',
+      status_emoji: '✨',
+      status_title: 'Welcome to Sparkle Hub!',
+      status_badge: '💖 Sparkle Member',
+      badge_bg: '#fdf2f8',
+      badge_color: '#be185d',
+      status_message: `Your Sparkle Hub journey has officially begun! We're thrilled to have you as part of our community of resin art lovers. Every piece we create is handcrafted with love, just for you.`,
+      next_step: 'Explore our one-of-a-kind collections!',
+    },
   };
 
   const theme = statusThemes[status] || statusThemes['Pending'];
 
+  // Determine visibility of order-specific details
+  const isWelcome = status === 'Welcome';
+  
   const templateParams = {
     to_email:        toEmail,
     to_name:         toName,
-    order_id:        orderId,
-    grand_total:     `PKR ${Number(grandTotal).toFixed(0)}`,
+    order_id:        orderId || 'NEW_MEMBER',
+    grand_total:     grandTotal ? `PKR ${Number(grandTotal).toFixed(0)}` : 'N/A',
     order_status:    status,
     status_emoji:    theme.status_emoji,
     status_title:    theme.status_title,
@@ -105,6 +118,8 @@ export async function sendOrderStatusEmail(toEmail, toName, orderId, grandTotal,
     badge_color:     theme.badge_color,
     status_message:  theme.status_message,
     next_step:       theme.next_step,
+    details_visibility: isWelcome ? 'none' : 'table',  // CSS display property
+    section_title:    isWelcome ? 'Member Information' : 'Order Details',
     store_name:      'Sparkle Hub',
     shop_url:        window.location.origin,
   };
@@ -115,4 +130,15 @@ export async function sendOrderStatusEmail(toEmail, toName, orderId, grandTotal,
     templateParams,
     EMAILJS_CONFIG.PUBLIC_KEY
   );
+}
+
+/**
+ * Sends a professional Welcome email to new members.
+ * Reuses the status email template for a consistent premium feel.
+ *
+ * @param {string} toEmail - New member's email
+ * @param {string} toName  - New member's full name
+ */
+export async function sendWelcomeEmail(toEmail, toName) {
+  return sendOrderStatusEmail(toEmail, toName, null, null, 'Welcome');
 }

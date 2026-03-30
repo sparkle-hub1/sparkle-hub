@@ -46,52 +46,80 @@ export function AuthProvider({ children }) {
     return signOut(auth);
   }
 
+  // REVERTED TO POPUP with more stability for local debugging
   async function loginWithGoogle() {
-    const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
-    
-    const userDocRef = doc(db, 'users', user.uid);
-    const userDocSnap = await getDoc(userDocRef);
-    
-    if (!userDocSnap.exists()) {
-      const name = user.displayName || 'Google User';
-      await setDoc(userDocRef, {
-        name: name,
-        email: user.email,
-        role: 'Customer',
-        createdAt: new Date().toISOString(),
-      });
-
-      // Send professional welcome email to NEW Google users ONLY
-      try {
-        await sendWelcomeEmail(user.email, name);
-      } catch (err) {
-        console.error("Welcome email failed:", err);
-      }
+    console.log("Initiating Google Sign-In via Popup...");
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      console.log("Google Login SUCCESS:", result.user.email);
+      // Logic for user doc creation is handled in onAuthStateChanged for maximum stability
+      return result;
+    } catch (error) {
+      console.error("Google Login Catch Error:", error.code, error.message);
+      throw error;
     }
-    return result;
   }
 
   useEffect(() => {
-
+    console.log("AuthProvider: initializing onAuthStateChanged...");
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
+      console.log("Auth State Changed: ", user ? user.email : "NO USER");
+      
       if (user) {
-        // Strict role validation checking the verified 'users' collection in Firestore
         try {
-          const userDoc = await getDoc(doc(db, 'users', user.uid));
-          if (userDoc.exists() && userDoc.data().role === 'Admin') {
+          const userDocRef = doc(db, 'users', user.uid);
+          console.log("Checking Firestore for user:", user.uid);
+          
+          let userSnap = await getDoc(userDocRef);
+          
+          if (!userSnap.exists()) {
+            console.log("Creating NEW Firestore document for:", user.email);
+            const name = user.displayName || 'Google User';
+            const userData = {
+              name: name,
+              email: user.email,
+              role: 'Customer',
+              createdAt: new Date().toISOString(),
+            };
+            
+            await setDoc(userDocRef, userData, { merge: true });
+            console.log("Firestore Document CREATED SUCCESSFULLY.");
+            
+            // Re-fetch snap for isAdmin check
+            userSnap = await getDoc(userDocRef);
+
+            // Send Welcome Email
+            try {
+              console.log("Sending Welcome Email...");
+              await sendWelcomeEmail(user.email, name);
+              console.log("Welcome Email SENT.");
+            } catch (emailErr) {
+              console.error("Welcome email FAILED:", emailErr);
+            }
+          } else {
+            console.log("Existing user detected. Role:", userSnap.data().role);
+          }
+
+          // Set Admin Status
+          if (userSnap.exists() && userSnap.data().role === 'Admin') {
             setIsAdmin(true);
+            console.log("User verified as ADMIN.");
           } else {
             setIsAdmin(false);
           }
+
+          setCurrentUser(user);
         } catch (error) {
-          console.error("Error verifying admin authority:", error);
+          console.error("Firestore Logic Error:", error);
           setIsAdmin(false);
+          setCurrentUser(user); // Still allow login, even if Firestore fails for now
         }
       } else {
+        setCurrentUser(null);
         setIsAdmin(false);
       }
+      
+      console.log("Finalizing Auth Loading State...");
       setLoading(false);
     });
 

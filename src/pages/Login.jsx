@@ -14,7 +14,7 @@ const STEP = {
 };
 
 export default function Login() {
-  const { currentUser, login, signup, loginWithGoogle } = useAuth();
+  const { currentUser, isAdmin, login, signup, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const [step, setStep] = useState(STEP.LOGIN);
@@ -38,7 +38,13 @@ export default function Login() {
   const [otpInput, setOtpInput] = useState('');
   const [otpSending, setOtpSending] = useState(false);
 
-  if (currentUser) return <Navigate to="/profile" replace />;
+  // ─── Post-Login Redirection ───
+  React.useEffect(() => {
+    if (currentUser) {
+      if (isAdmin) navigate('/admin');
+      else navigate('/profile');
+    }
+  }, [currentUser, isAdmin, navigate]);
 
   // ─── Helpers ──────────────────────────────────────────
   const resetErrors = () => { setError(''); setSuccess(''); };
@@ -68,16 +74,10 @@ export default function Login() {
     resetErrors();
     setLoading(true);
     try {
-      const userCredential = await loginWithGoogle();
-      const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
-      if (userDoc.exists() && userDoc.data().role === 'Admin') {
-        navigate('/admin');
-      } else {
-        navigate('/profile');
-      }
+      await loginWithGoogle();
+      // Page will redirect to Google...
     } catch (err) {
       setError(err.message.replace('Firebase: ', ''));
-    } finally {
       setLoading(false);
     }
   };

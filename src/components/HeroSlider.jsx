@@ -82,17 +82,17 @@ export default function HeroSlider() {
       <div className="absolute inset-0 z-20 bg-gradient-to-t from-rose-50 via-transparent to-transparent pointer-events-none"></div>
 
       {/* Hero Content Layer */}
-      <div className="absolute inset-0 z-30 flex flex-col items-center justify-center px-4 text-center pb-10">
-        <h1 className="text-6xl sm:text-7xl md:text-[7rem] font-black tracking-tight text-white mb-6 drop-shadow-[0_4px_10px_rgba(225,29,72,0.6)] leading-none">
+      <div className="absolute inset-0 z-30 flex flex-col items-center justify-center px-6 text-center pb-12 sm:pb-16">
+        <h1 className="text-[2.6rem] sm:text-7xl md:text-[7rem] font-black tracking-tighter text-white mb-6 drop-shadow-[0_4px_12px_rgba(225,29,72,0.6)] leading-[1.1] sm:leading-none">
           Resin By Maryam
         </h1>
-        <p className="text-lg md:text-2xl text-rose-950 font-black leading-relaxed mx-auto max-w-2xl drop-shadow-md bg-white/70 backdrop-blur-xl px-10 py-4 border border-white/60 shadow-[0_10px_30px_rgba(255,228,230,0.4)] rounded-full">
-          Handcrafted elegance with <span className="text-pink-600 font-extrabold">premium aesthetics</span>
+        <p className="text-sm sm:text-lg md:text-2xl text-rose-950 font-black leading-relaxed mx-auto max-w-[280px] sm:max-w-2xl drop-shadow-md bg-white/80 backdrop-blur-xl px-6 sm:px-10 py-3 sm:py-4 border border-white/60 shadow-[0_10px_30px_rgba(255,228,230,0.4)] rounded-full">
+          Handcrafted elegance with <span className="text-pink-600 font-extrabold uppercase tracking-tight">premium aesthetics</span>
         </p>
         
-        <div className="pt-12 sm:pt-16 flex justify-center items-center">
-          <Link to="/products" className="px-14 py-5 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full font-black text-xl shadow-[0_15px_40px_rgba(244,114,182,0.4)] hover:shadow-[0_20px_50px_rgba(244,114,182,0.6)] hover:-translate-y-1 transition-all duration-300 outline-none flex items-center gap-4 border-2 border-white/20">
-            Discover Masterpieces <span className="text-3xl leading-none drop-shadow-md pb-1">&rarr;</span>
+        <div className="pt-10 sm:pt-16 flex justify-center items-center scale-90 sm:scale-100">
+          <Link to="/products" className="px-10 sm:px-14 py-4 sm:py-5 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full font-black text-lg sm:text-xl shadow-[0_15px_40px_rgba(244,114,182,0.4)] hover:shadow-[0_20px_50px_rgba(244,114,182,0.6)] hover:-translate-y-1 transition-all duration-300 outline-none flex items-center gap-3 sm:gap-4 border-2 border-white/20 whitespace-nowrap">
+            Discover Masterpieces <span className="text-2xl sm:text-3xl leading-none drop-shadow-md pb-1">&rarr;</span>
           </Link>
         </div>
 

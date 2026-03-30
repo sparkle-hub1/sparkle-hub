@@ -86,20 +86,20 @@ export default function AdminLayout() {
       <div className="flex-1 flex flex-col overflow-hidden relative z-10">
         
         {/* Mobile Header */}
-        <header className="md:hidden h-20 bg-white/80 backdrop-blur-xl border-b border-rose-100 flex items-center justify-between px-6 shadow-sm z-30">
-          <h1 className="text-xl font-black text-rose-950">Sparkle Hub Control</h1>
+        <header className="md:hidden h-20 bg-white/70 backdrop-blur-2xl border-b border-rose-100 flex items-center justify-between px-5 sm:px-8 shadow-[0_1px_10px_rgba(255,228,230,0.4)] z-30">
+          <h1 className="text-xl font-black text-rose-950 tracking-tight">Admin Console</h1>
           <button 
             onClick={() => setIsSidebarOpen(true)}
-            className="p-2 text-rose-600 hover:text-pink-500 focus:outline-none bg-rose-50 rounded-xl"
+            className="p-3 text-rose-600 hover:text-pink-500 focus:outline-none bg-rose-50 rounded-2xl active:scale-95 transition-all"
           >
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
+            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
         </header>
 
         {/* Dashboard Content Container */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-transparent p-6 md:p-10 custom-scrollbar">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-transparent p-4 sm:p-6 md:p-10 custom-scrollbar">
           <div className="max-w-7xl mx-auto w-full">
             <Outlet />
           </div>

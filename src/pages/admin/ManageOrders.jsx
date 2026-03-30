@@ -177,12 +177,12 @@ export default function ManageOrders() {
 
   return (
     <div className="animate-fade-in-up">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4 border-b border-rose-100 pb-6">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 sm:mb-10 gap-6 border-b border-rose-100 pb-6">
         <div>
-          <h2 className="text-3xl font-black text-rose-950 tracking-tight">Financial & Fulfillment Pipeline</h2>
-          <p className="text-rose-600 font-medium">Verify transfers and dispatch masterpieces</p>
+          <h2 className="text-3xl sm:text-4xl font-black text-rose-950 tracking-tight">Order Pipeline</h2>
+          <p className="text-rose-600 font-medium text-sm sm:text-base">Verify transfers and dispatch masterpieces</p>
         </div>
-        <button onClick={fetchOrders} className="px-5 py-2.5 bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-pink-600 rounded-xl font-bold shadow-sm transition-all flex items-center gap-2">
+        <button onClick={fetchOrders} className="w-full lg:w-auto px-5 py-3.5 bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-pink-600 rounded-xl font-bold shadow-sm transition-all flex items-center justify-center gap-2 active:scale-95">
           <span>🔄</span> Refresh Pipeline
         </button>
       </div>
@@ -259,26 +259,26 @@ export default function ManageOrders() {
       </div>
 
       {isModalOpen && selectedOrder && (
-        <div className="fixed inset-0 bg-rose-950/40 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="bg-white border border-white rounded-[2.5rem] p-8 md:p-10 w-full max-w-4xl shadow-[0_30px_60px_rgba(255,228,230,0.9)] max-h-[90vh] overflow-y-auto custom-scrollbar relative animate-fade-in-up">
+        <div className="fixed inset-0 bg-rose-950/40 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 z-50">
+          <div className="bg-white border border-white rounded-[2rem] sm:rounded-[2.5rem] p-5 sm:p-8 md:p-10 w-full max-w-4xl shadow-[0_30px_60px_rgba(255,228,230,0.9)] max-h-[94vh] overflow-y-auto custom-scrollbar relative animate-fade-in-up">
             
-            <button onClick={closeModal} className="absolute top-6 right-6 text-rose-400 hover:text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-full p-2 transition-colors z-20">
+            <button onClick={closeModal} className="absolute top-4 right-4 sm:top-6 sm:right-6 text-rose-400 hover:text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-full p-2 transition-colors z-20">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
             
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 pr-16 gap-6">
-              <div>
-                <h3 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-500 tracking-tight mb-1">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 sm:mb-8 pr-12 sm:pr-16 gap-4 sm:gap-6">
+              <div className="w-full">
+                <h3 className="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-500 tracking-tight mb-1">
                   Requisition Details
                 </h3>
-                <p className="font-mono text-sm font-bold text-rose-500">REF: {selectedOrder.id}</p>
+                <p className="font-mono text-xs sm:text-sm font-bold text-rose-500 truncate">REF: {selectedOrder.id}</p>
               </div>
               
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full md:w-auto">
                 <button 
                   onClick={handleDownloadPDF}
                   disabled={isGeneratingPdf}
-                  className="px-5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-xs font-black uppercase tracking-widest border border-rose-100 shadow-sm transition-all flex items-center gap-2 group disabled:opacity-50"
+                  className="flex-1 sm:flex-none justify-center px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-widest border border-rose-100 shadow-sm transition-all flex items-center gap-2 group disabled:opacity-50"
                 >
                    {isGeneratingPdf ? (
                      <>
@@ -287,25 +287,25 @@ export default function ManageOrders() {
                      </>
                    ) : (
                      <>
-                       <span className="text-base group-hover:scale-110 transition-transform">📄</span> Print / Download PDF
+                       <span className="text-sm sm:text-base group-hover:scale-110 transition-transform">📄</span> Export PDF
                      </>
                    )}
                 </button>
-                <span className={`px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest border inline-flex items-center gap-2 shadow-sm ${getStatusColor(selectedOrder.orderStatus)}`}>
+                <span className={`flex-1 sm:flex-none justify-center px-4 py-2.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-widest border inline-flex items-center gap-2 shadow-sm ${getStatusColor(selectedOrder.orderStatus)}`}>
                    <span className="w-2 h-2 rounded-full bg-current"></span>
-                   Current State: {selectedOrder.orderStatus}
+                   {selectedOrder.orderStatus}
                 </span>
               </div>
             </div>
 
             <div id="order-details-content" className="p-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                <div className="bg-rose-50/50 p-6 rounded-[2.5rem] border border-rose-100 shadow-inner">
-                  <h4 className="text-xs font-black text-rose-400 uppercase tracking-widest mb-4 border-b border-rose-100 pb-2">Client Identity & Dispatch Routing</h4>
-                  <p className="font-black text-rose-950 text-xl">{selectedOrder.customerDetails?.name || 'Guest'}</p>
-                  <p className="text-rose-600 font-bold text-sm mt-1">{selectedOrder.userEmail}</p>
-                  <p className="text-rose-600 font-bold text-sm mt-1">{selectedOrder.customerDetails?.phone}</p>
-                  <div className="mt-4 p-5 bg-white rounded-2xl border border-rose-100 shadow-sm leading-relaxed text-sm text-rose-800/80 font-bold">
+                <div className="bg-rose-50/50 p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2.5rem] border border-rose-100 shadow-inner">
+                  <h4 className="text-[10px] font-black text-rose-400 uppercase tracking-widest mb-4 border-b border-rose-100 pb-2">Client Dispatch Routing</h4>
+                  <p className="font-black text-rose-950 text-lg sm:text-x">{selectedOrder.customerDetails?.name || 'Guest'}</p>
+                  <p className="text-rose-600 font-bold text-xs sm:text-sm mt-1">{selectedOrder.userEmail}</p>
+                  <p className="text-rose-600 font-bold text-xs sm:text-sm mt-1">{selectedOrder.customerDetails?.phone}</p>
+                  <div className="mt-4 p-4 sm:p-5 bg-white rounded-2xl border border-rose-100 shadow-sm leading-relaxed text-xs sm:text-sm text-rose-800/80 font-bold">
                     {selectedOrder.customerDetails?.address}
                   </div>
                 </div>
@@ -347,37 +347,37 @@ export default function ManageOrders() {
                 </div>
               </div>
 
-              <div className="bg-white border border-rose-100 rounded-[2.5rem] p-8 mb-8 shadow-sm">
-                <h4 className="text-xs font-black text-rose-400 uppercase tracking-widest mb-6 border-b border-rose-50 pb-2">Masterpieces Commissioned</h4>
-                <div className="space-y-6">
+              <div className="bg-white border border-rose-100 rounded-[1.5rem] sm:rounded-[2.5rem] p-5 sm:p-8 mb-8 shadow-sm">
+                <h4 className="text-[10px] font-black text-rose-400 uppercase tracking-widest mb-6 border-b border-rose-50 pb-2">Commissioned Pieces</h4>
+                <div className="space-y-4 sm:space-y-6">
                   {selectedOrder.items?.map((item, idx) => (
-                    <div key={idx} className="flex justify-between items-center bg-rose-50/30 p-4 rounded-2xl border border-rose-50 transition-colors hover:bg-rose-50">
-                      <div className="flex items-center gap-5">
-                        <img src={item.image} alt={item.name} className="w-16 h-16 rounded-xl object-cover shadow-sm border border-white" />
+                    <div key={idx} className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-rose-50/30 p-4 rounded-2xl border border-rose-50 gap-4">
+                      <div className="flex items-center gap-4 sm:gap-5">
+                        <img src={item.image} alt={item.name} className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover shadow-sm border border-white shrink-0" />
                         <div>
-                          <p className="font-black text-rose-950 text-base">{item.name}</p>
-                          <p className="text-sm text-rose-600 font-bold mt-1">
-                            Qty: <span className="font-black text-rose-950">{item.quantity}</span>
-                            {item.variation && <span className="ml-4 font-black text-pink-700 bg-pink-100 px-3 py-1.5 rounded-xl border border-pink-200 shadow-sm text-xs">{item.variation}</span>}
-                          </p>
+                          <p className="font-black text-rose-950 text-sm sm:text-base leading-tight">{item.name}</p>
+                          <div className="flex flex-wrap items-center gap-2 mt-1 sm:mt-2">
+                             <span className="text-[10px] sm:text-xs text-rose-800/60 font-bold">Qty: <span className="text-rose-950">{item.quantity}</span></span>
+                             {item.variation && <span className="font-black text-pink-700 bg-pink-100 px-2.5 py-1 rounded-lg border border-pink-200 text-[10px]">{item.variation}</span>}
+                          </div>
                         </div>
                       </div>
-                      <p className="font-black text-rose-950 text-xl">PKR {(item.price * item.quantity).toFixed(0)}</p>
+                      <p className="font-black text-rose-950 text-lg sm:text-xl w-full sm:w-auto text-right">PKR {(item.price * item.quantity).toFixed(0)}</p>
                     </div>
                   ))}
                 </div>
                 <div className="mt-8 pt-6 border-t border-rose-100 flex flex-col gap-2 items-end">
-                  <div className="flex justify-between w-full max-w-[200px] text-xs font-bold text-rose-400 uppercase">
+                  <div className="flex justify-between w-full max-w-[240px] text-[10px] font-black text-rose-400 uppercase tracking-wider">
                       <span>Subtotal</span>
-                      <span>PKR {(selectedOrder.totalAmount - (selectedOrder.deliveryCharges || 0)).toFixed(0)}</span>
+                      <span className="text-rose-600">PKR {(selectedOrder.totalAmount - (selectedOrder.deliveryCharges || 0)).toFixed(0)}</span>
                   </div>
-                  <div className="flex justify-between w-full max-w-[200px] text-xs font-bold text-rose-400 uppercase">
+                  <div className="flex justify-between w-full max-w-[240px] text-[10px] font-black text-rose-400 uppercase tracking-wider">
                       <span>Delivery</span>
-                      <span>PKR {(selectedOrder.deliveryCharges || 0).toFixed(0)}</span>
+                      <span className="text-rose-600">PKR {(selectedOrder.deliveryCharges || 0).toFixed(0)}</span>
                   </div>
-                  <div className="flex justify-between w-full mt-4 pt-4 border-t border-rose-50 items-center">
-                    <span className="font-black uppercase tracking-widest text-rose-500 text-sm">Grand Total Authenticated</span>
-                    <span className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-500 tracking-tight">PKR {selectedOrder.totalAmount?.toFixed(0)}</span>
+                  <div className="flex justify-between w-full mt-4 pt-4 border-t border-rose-50 items-center gap-4">
+                    <span className="font-black uppercase tracking-widest text-rose-400 text-[10px] sm:text-xs">Authenticated Total</span>
+                    <span className="text-2xl sm:text-4xl font-black text-rose-950 tracking-tight">PKR {selectedOrder.totalAmount?.toFixed(0)}</span>
                   </div>
                 </div>
               </div>
@@ -411,13 +411,13 @@ export default function ManageOrders() {
             </div>
 
             {/* Lifecycle Dispatch Controls */}
-            <div className="bg-gradient-to-br from-rose-50 to-pink-50 p-6 rounded-[2rem] border border-pink-200 shadow-inner">
-              <h4 className="text-xs font-bold text-rose-500 uppercase tracking-widest mb-4 border-b border-rose-200/50 pb-2">Lifecycle Controller Workflow</h4>
+            <div className="bg-gradient-to-br from-rose-50 to-pink-50 p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-pink-200/50 shadow-inner">
+              <h4 className="text-[10px] font-black text-rose-400 uppercase tracking-widest mb-4 border-b border-rose-200/30 pb-2 text-center sm:text-left">Dispatch Control Workflow</h4>
               
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 {selectedOrder.orderStatus === 'Awaiting Payment' && (
-                  <div className="flex-1 py-4 bg-yellow-50 text-yellow-600 rounded-xl font-bold shadow-sm border border-yellow-200 flex items-center justify-center text-center cursor-not-allowed">
-                     ⏳ Awaiting Customer Upload...
+                  <div className="flex-1 py-4 bg-yellow-50 text-yellow-600 rounded-xl font-bold shadow-sm border border-yellow-200 flex items-center justify-center text-center text-xs px-4">
+                     ⏳ Awaiting Customer Receipt...
                   </div>
                 )}
                 
@@ -426,16 +426,16 @@ export default function ManageOrders() {
                     <button 
                       onClick={() => handleUpdateStatus('Confirmed')} 
                       disabled={updating}
-                      className="flex-1 py-4 bg-sky-500 hover:bg-sky-600 text-white rounded-xl font-bold shadow-md hover:shadow-lg hover:-translate-y-1 transition-all disabled:opacity-50"
+                      className="flex-1 py-4 bg-sky-500 hover:bg-sky-600 text-white rounded-xl font-black shadow-md hover:-translate-y-0.5 transition-all disabled:opacity-50 text-sm"
                     >
-                      Authenticate Payment & Confirm
+                      Verify & Confirm
                     </button>
                     <button 
                       onClick={() => handleUpdateStatus('Rejected')} 
                       disabled={updating}
-                      className="flex-none px-6 py-4 bg-white border border-red-200 hover:bg-red-50 text-red-500 rounded-xl font-bold shadow-sm transition-all disabled:opacity-50"
+                      className="px-6 py-4 bg-white border border-red-100 text-red-500 rounded-xl font-black shadow-sm transition-all disabled:opacity-50 text-sm sm:w-auto"
                     >
-                      Reject Fraudulent
+                      Reject
                     </button>
                   </>
                 )}
@@ -444,9 +444,9 @@ export default function ManageOrders() {
                   <button 
                     onClick={() => handleUpdateStatus('Packed')} 
                     disabled={updating}
-                    className="flex-1 py-4 bg-violet-500 hover:bg-violet-600 text-white rounded-xl font-bold shadow-md hover:shadow-lg hover:-translate-y-1 transition-all disabled:opacity-50"
+                    className="flex-1 py-4 bg-violet-500 hover:bg-violet-600 text-white rounded-xl font-black shadow-md hover:-translate-y-0.5 transition-all text-sm"
                   >
-                    Initiate Packing Sequence
+                    Mark as Packed
                   </button>
                 )}
                 
@@ -454,9 +454,9 @@ export default function ManageOrders() {
                   <button 
                     onClick={() => handleUpdateStatus('Dispatched')} 
                     disabled={updating}
-                    className="flex-1 py-4 bg-teal-500 hover:bg-teal-600 text-white rounded-xl font-bold shadow-md hover:shadow-lg hover:-translate-y-1 transition-all disabled:opacity-50"
+                    className="flex-1 py-4 bg-teal-500 hover:bg-teal-600 text-white rounded-xl font-black shadow-md hover:-translate-y-0.5 transition-all text-sm"
                   >
-                    Dispatch via Courier
+                    Mark as Dispatched
                   </button>
                 )}
                 
@@ -464,15 +464,15 @@ export default function ManageOrders() {
                   <button 
                     onClick={() => handleUpdateStatus('Delivered')} 
                     disabled={updating}
-                    className="flex-1 py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold shadow-md hover:shadow-lg hover:-translate-y-1 transition-all disabled:opacity-50"
+                    className="flex-1 py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-black shadow-md hover:-translate-y-0.5 transition-all text-sm"
                   >
-                    Mark as Delivered Successfully
+                    Verify Delivery
                   </button>
                 )}
 
                 {['Delivered', 'Rejected'].includes(selectedOrder.orderStatus) && (
-                  <div className="flex-1 flex items-center justify-center py-4 bg-white border border-rose-100 rounded-xl text-rose-500 font-bold shadow-sm">
-                    Lifecycle Locked at {selectedOrder.orderStatus} state.
+                  <div className="flex-1 flex items-center justify-center py-4 bg-white border border-rose-100 rounded-xl text-rose-400 font-bold shadow-sm text-xs uppercase tracking-widest">
+                    Status: {selectedOrder.orderStatus} (LOCKED)
                   </div>
                 )}
               </div>

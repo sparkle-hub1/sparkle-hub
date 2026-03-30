@@ -243,18 +243,18 @@ export default function ManageProducts() {
       )}
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-rose-100 pb-6">
-        <div>
-          <h2 className="text-3xl font-black text-rose-950 tracking-tight">Products</h2>
-          <p className="text-rose-600 font-medium">Manage your handcrafted resin catalog</p>
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 border-b border-rose-100 pb-6">
+        <div className="w-full">
+          <h2 className="text-3xl sm:text-4xl font-black text-rose-950 tracking-tight">Masterpiece Catalog</h2>
+          <p className="text-rose-600 font-medium text-sm sm:text-base">Manage your handcrafted resin creations</p>
         </div>
-        <div className="flex flex-wrap gap-3 w-full sm:w-auto">
+        <div className="flex flex-wrap gap-3 w-full lg:w-auto">
           {selectedItems.length > 0 && (
-            <button onClick={() => openDeleteModal('multiple')} className="px-5 py-3 bg-white border border-red-200 text-red-500 hover:bg-red-50 rounded-xl font-bold shadow-sm transition-all hover:-translate-y-0.5 flex items-center gap-2 flex-1 sm:flex-none justify-center">
+            <button onClick={() => openDeleteModal('multiple')} className="flex-1 lg:flex-none justify-center px-5 py-3.5 bg-white border border-red-200 text-red-500 hover:bg-red-50 rounded-xl font-bold shadow-sm transition-all active:scale-95 flex items-center gap-2">
               🗑️ Delete ({selectedItems.length})
             </button>
           )}
-          <button onClick={() => setIsModalOpen(true)} className="px-6 py-3 bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 rounded-xl font-bold text-white shadow-[0_10px_20px_rgba(244,114,182,0.3)] transition-all hover:-translate-y-0.5 flex items-center gap-2 flex-1 sm:flex-none justify-center outline-none">
+          <button onClick={() => setIsModalOpen(true)} className="flex-1 lg:flex-none justify-center px-6 py-3.5 bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 rounded-xl font-black text-white shadow-[0_10px_20px_rgba(244,114,182,0.3)] transition-all active:scale-95 flex items-center gap-2 outline-none">
             <span className="text-xl leading-none">+</span> Add Product
           </button>
         </div>
@@ -334,31 +334,31 @@ export default function ManageProducts() {
 
       {/* Add/Edit Product Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-rose-950/40 backdrop-blur-md flex items-center justify-center p-4 z-40">
-          <div className="bg-white border border-white rounded-[2rem] p-7 md:p-10 w-full max-w-2xl shadow-[0_30px_60px_rgba(255,228,230,0.9)] max-h-[92vh] overflow-y-auto custom-scrollbar relative animate-fade-in-up">
+        <div className="fixed inset-0 bg-rose-950/40 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 z-40">
+          <div className="bg-white border border-white rounded-[2rem] p-5 sm:p-8 md:p-10 w-full max-w-2xl shadow-[0_30px_60px_rgba(255,228,230,0.9)] max-h-[92vh] overflow-y-auto custom-scrollbar relative animate-fade-in-up">
 
-            <button onClick={closeModal} className="absolute top-5 right-5 text-rose-400 hover:text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-full p-2 transition-colors">
+            <button onClick={closeModal} className="absolute top-4 right-4 sm:top-6 sm:right-6 text-rose-400 hover:text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-full p-2 transition-colors z-20">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
 
-            <h3 className="text-2xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-500 tracking-tight">
-              {editingId ? 'Edit Product' : 'Add New Product'}
+            <h3 className="text-xl sm:text-2xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-500 tracking-tight">
+              {editingId ? 'Refine Masterpiece' : 'New Masterpiece'}
             </h3>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-rose-500 mb-2 uppercase tracking-widest pl-1">Name</label>
-                  <input type="text" name="name" value={formData.name} onChange={handleInputChange} required className="w-full bg-rose-50/50 border border-rose-200 rounded-xl px-4 py-3 text-rose-900 focus:outline-none focus:border-pink-400 focus:bg-white focus:ring-4 focus:ring-pink-100 transition-all font-bold placeholder-rose-300 shadow-inner" placeholder="E.g. Golden Flow Clock" />
+                  <label className="block text-[10px] font-black text-rose-400 mb-2 uppercase tracking-widest pl-1">Name</label>
+                  <input type="text" name="name" value={formData.name} onChange={handleInputChange} required className="w-full bg-rose-50/50 border border-rose-100 rounded-xl px-4 py-3 text-rose-900 focus:outline-none focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-50 transition-all font-bold placeholder-rose-200 text-sm" placeholder="E.g. Golden Flow Clock" />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-rose-500 mb-2 uppercase tracking-widest pl-1">Price (PKR)</label>
-                    <input type="number" name="price" value={formData.price} onChange={handleInputChange} required min="0" className="w-full bg-rose-50/50 border border-rose-200 rounded-xl px-4 py-3 text-rose-900 focus:outline-none focus:border-pink-400 focus:bg-white focus:ring-4 focus:ring-pink-100 transition-all font-bold placeholder-rose-300 shadow-inner" placeholder="0" />
+                    <label className="block text-[10px] font-black text-rose-400 mb-2 uppercase tracking-widest pl-1">Price</label>
+                    <input type="number" name="price" value={formData.price} onChange={handleInputChange} required min="0" className="w-full bg-rose-50/50 border border-rose-100 rounded-xl px-4 py-3 text-rose-900 focus:outline-none focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-50 transition-all font-bold placeholder-rose-200 text-sm" placeholder="0" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-rose-500 mb-2 uppercase tracking-widest pl-1">Discount (%)</label>
-                    <input type="number" name="discount" value={formData.discount} onChange={handleInputChange} min="0" max="100" className="w-full bg-rose-50/50 border border-rose-200 rounded-xl px-4 py-3 text-rose-900 focus:outline-none focus:border-pink-400 focus:bg-white focus:ring-4 focus:ring-pink-100 transition-all font-bold placeholder-rose-300 shadow-inner" placeholder="0" title="Leave empty or 0 for no discount" />
+                    <label className="block text-[10px] font-black text-rose-400 mb-2 uppercase tracking-widest pl-1">Disc %</label>
+                    <input type="number" name="discount" value={formData.discount} onChange={handleInputChange} min="0" max="100" className="w-full bg-rose-50/50 border border-rose-100 rounded-xl px-4 py-3 text-rose-900 focus:outline-none focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-50 transition-all font-bold placeholder-rose-200 text-sm" placeholder="0" />
                   </div>
                 </div>
               </div>
@@ -438,37 +438,37 @@ export default function ManageProducts() {
 
               {/* Delivery Charges — per product */}
               <div>
-                <label className="block text-xs font-bold text-rose-500 mb-3 uppercase tracking-widest pl-1">Delivery Charges</label>
-                <div className="grid grid-cols-2 gap-4">
+                <label className="block text-[10px] font-black text-rose-400 mb-3 uppercase tracking-widest pl-1">Logistics / Delivery</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <button
                     type="button"
                     onClick={() => setFormData(p => ({ ...p, deliveryFree: true, deliveryCharge: '' }))}
-                    className={`py-4 rounded-2xl font-bold text-base border-2 transition-all outline-none flex flex-col items-center gap-1.5 ${
+                    className={`py-3.5 sm:py-4 rounded-xl font-black text-sm border-2 transition-all outline-none flex items-center justify-center gap-3 ${
                       formData.deliveryFree
-                        ? 'bg-emerald-500 border-emerald-500 text-white shadow-[0_8px_20px_rgba(16,185,129,0.3)]'
-                        : 'bg-white border-emerald-200 text-emerald-600 hover:bg-emerald-50'
+                        ? 'bg-rose-950 border-rose-950 text-white shadow-lg'
+                        : 'bg-white border-rose-100 text-rose-600 hover:bg-rose-50 font-bold'
                     }`}
                   >
-                    <span className="text-2xl">🎁</span>
-                    Free Delivery
+                    <span className="text-xl">🎁</span>
+                    Free Shipping
                   </button>
                   <button
                     type="button"
                     onClick={() => setFormData(p => ({ ...p, deliveryFree: false }))}
-                    className={`py-4 rounded-2xl font-bold text-base border-2 transition-all outline-none flex flex-col items-center gap-1.5 ${
+                    className={`py-3.5 sm:py-4 rounded-xl font-black text-sm border-2 transition-all outline-none flex items-center justify-center gap-3 ${
                       !formData.deliveryFree
-                        ? 'bg-gradient-to-r from-pink-400 to-rose-400 border-pink-400 text-white shadow-[0_8px_20px_rgba(244,114,182,0.3)]'
-                        : 'bg-white border-rose-200 text-rose-600 hover:bg-rose-50'
+                        ? 'bg-rose-950 border-rose-950 text-white shadow-lg'
+                        : 'bg-white border-rose-100 text-rose-600 hover:bg-rose-50 font-bold'
                     }`}
                   >
-                    <span className="text-2xl">🚚</span>
-                    Paid Delivery
+                    <span className="text-xl">🚚</span>
+                    Paid Shipping
                   </button>
                 </div>
                 {/* Amount input — visible only when Paid is selected */}
                 {!formData.deliveryFree && (
-                  <div className="mt-4 relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-rose-400 text-base pointer-events-none">Rs.</span>
+                  <div className="mt-4 relative animate-fade-in-up">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-rose-300 text-sm pointer-events-none uppercase">PKR</span>
                     <input
                       type="number"
                       min="0"
@@ -477,7 +477,7 @@ export default function ManageProducts() {
                       value={formData.deliveryCharge}
                       onChange={(e) => setFormData(p => ({ ...p, deliveryCharge: e.target.value }))}
                       placeholder="E.g. 150"
-                      className="w-full bg-rose-50/50 border border-rose-200 rounded-xl pl-12 pr-4 py-3 text-rose-900 focus:outline-none focus:border-pink-400 focus:bg-white focus:ring-4 focus:ring-pink-100 transition-all font-bold placeholder-rose-300 shadow-inner"
+                      className="w-full bg-rose-50/50 border border-rose-100 rounded-xl pl-14 pr-4 py-3 text-rose-900 focus:outline-none focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-50 transition-all font-bold placeholder-rose-200 text-sm"
                     />
                   </div>
                 )}

@@ -155,24 +155,24 @@ export default function ManageAdvertisements() {
         </div>
       )}
 
-      <div className="mb-10 text-center sm:text-left text-rose-950">
-        <h1 className="text-4xl sm:text-5xl font-black mb-3">Announcement Bar</h1>
-        <p className="text-rose-800/80 font-medium">Control the scrolling "breaking news" taglines seen at the top of the website.</p>
+      <div className="mb-8 sm:mb-10 text-center sm:text-left text-rose-950 px-2 sm:px-0">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-3 italic tracking-tight">Announcement Bar</h1>
+        <p className="text-rose-800/80 font-medium text-sm sm:text-base leading-relaxed">Control the scrolling "breaking news" taglines seen at the top of Sparkle Hub.</p>
       </div>
 
       <div className="bg-white/80 border border-white rounded-[2rem] p-6 sm:p-10 shadow-[0_20px_50px_rgba(255,228,230,0.5)] backdrop-blur-md mb-10">
-        <form onSubmit={handleAddMessage} className="flex flex-col sm:flex-row gap-4 mb-10">
+        <form onSubmit={handleAddMessage} className="flex flex-col md:flex-row gap-4 mb-8 sm:mb-10">
           <input
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="E.g. Free shipping on all orders over PKR 5000!"
-            className="flex-1 bg-rose-50/50 border border-rose-200 rounded-xl px-4 py-3 sm:py-4 text-rose-900 focus:outline-none focus:border-pink-400 focus:bg-white focus:ring-4 focus:ring-pink-100 transition-all font-bold placeholder-rose-300 shadow-inner"
+            placeholder="E.g. Free shipping on PKR 5000+!"
+            className="flex-1 bg-rose-50/50 border border-rose-100 rounded-xl px-4 py-3.5 sm:py-4 text-rose-900 focus:outline-none focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-50 transition-all font-bold placeholder-rose-200 text-sm sm:text-base outline-none"
           />
           <button
             type="submit"
             disabled={!newMessage.trim()}
-            className="px-8 py-3 sm:py-4 bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white rounded-xl font-black shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            className="w-full md:w-auto px-8 py-3.5 sm:py-4 bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white rounded-xl font-black shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap active:scale-95"
           >
             Add Tagline
           </button>
@@ -213,9 +213,9 @@ export default function ManageAdvertisements() {
       </div>
 
       {/* --- HERO SLIDER SECTION --- */}
-      <div className="mb-10 text-center sm:text-left text-rose-950 mt-16">
-        <h1 className="text-4xl sm:text-5xl font-black mb-3">Hero Image Slider</h1>
-        <p className="text-rose-800/80 font-medium">Upload beautiful showcase pictures for the Home page. They will crossfade continuously on a 5 second loop.</p>
+      <div className="mb-8 sm:mb-10 text-center sm:text-left text-rose-950 mt-16 px-2 sm:px-0">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-3 italic tracking-tight">Main Showcase Slider</h1>
+        <p className="text-rose-800/80 font-medium text-sm sm:text-base leading-relaxed">Upload high-resolution landscape images for the Homepage main banner.</p>
       </div>
 
       <div className="bg-white/80 border border-white rounded-[2rem] p-6 sm:p-10 shadow-[0_20px_50px_rgba(255,228,230,0.5)] backdrop-blur-md mb-10">
@@ -228,9 +228,9 @@ export default function ManageAdvertisements() {
             ) : (
                 <>
                   <span className="text-4xl block mb-3">📸</span>
-                  <h3 className="font-black text-rose-950 text-xl mb-2">Upload New Photo</h3>
-                  <p className="text-rose-800/70 font-medium text-sm mb-4">Recommended size: High Resolution Landscape (1920x1080px)</p>
-                  <label className="cursor-pointer inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-pink-400 to-rose-400 text-white rounded-xl font-black shadow-md transition-all hover:-translate-y-1 hover:shadow-lg focus-within:ring-4 focus-within:ring-pink-200">
+                  <h3 className="font-black text-rose-950 text-lg sm:text-xl mb-2">Upload New Media</h3>
+                  <p className="text-rose-800/70 font-medium text-[10px] sm:text-xs mb-6 uppercase tracking-widest leading-relaxed">Landscape (1920x1080) Recommended</p>
+                  <label className="cursor-pointer inline-flex items-center justify-center px-8 py-3.5 bg-gradient-to-r from-pink-400 to-rose-400 text-white rounded-xl font-black shadow-lg shadow-pink-200 transition-all hover:-translate-y-1 hover:shadow-xl focus-within:ring-4 focus-within:ring-pink-100 active:scale-95">
                     Choose Image
                     <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
                   </label>

@@ -61,20 +61,20 @@ export default function ManageUsers() {
 
   return (
     <div className="max-w-7xl mx-auto w-full pt-4 sm:pt-8 animate-fade-in-up">
-      <div className="mb-10 text-center sm:text-left text-rose-950 flex flex-col sm:flex-row justify-between items-center gap-6">
-        <div>
-          <h1 className="text-4xl sm:text-5xl font-black mb-3">Registered Users</h1>
-          <p className="text-rose-800/80 font-medium">View your entire customer base and track their complete order history.</p>
+      <div className="mb-8 sm:mb-10 text-center sm:text-left text-rose-950 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="w-full">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-2 tracking-tight">User Directory</h1>
+          <p className="text-rose-800/80 font-medium text-sm sm:text-base">Track your customer base and their acquisition history.</p>
         </div>
-        <div className="bg-white/80 border border-white px-6 py-4 rounded-2xl shadow-sm flex items-center gap-4">
+        <div className="bg-white/80 border border-white px-6 py-4 rounded-2xl shadow-sm flex items-center gap-4 shrink-0 transition-all hover:shadow-md">
            <div className="text-center">
-             <span className="block text-2xl font-black text-rose-600">{users.length}</span>
-             <span className="text-xs font-bold text-rose-400 uppercase tracking-widest">Total Users</span>
+             <span className="block text-xl sm:text-2xl font-black text-rose-600">{users.length}</span>
+             <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest whitespace-nowrap">Clients</span>
            </div>
-           <div className="w-px h-10 bg-rose-200"></div>
+           <div className="w-px h-10 bg-rose-100"></div>
            <div className="text-center">
-             <span className="block text-2xl font-black text-pink-500">{orders.length}</span>
-             <span className="text-xs font-bold text-rose-400 uppercase tracking-widest">Total Orders</span>
+             <span className="block text-xl sm:text-2xl font-black text-pink-500">{orders.length}</span>
+             <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest whitespace-nowrap">Orders</span>
            </div>
         </div>
       </div>
@@ -112,32 +112,32 @@ export default function ManageUsers() {
                      {/* User Row */}
                      <div 
                        onClick={() => setExpandedUserId(isExpanded ? null : user.id)}
-                       className="cursor-pointer px-4 sm:px-8 py-5 grid grid-cols-1 md:grid-cols-12 gap-4 items-center group"
+                       className="cursor-pointer px-5 sm:px-8 py-5 flex flex-col md:grid md:grid-cols-12 gap-4 items-start md:items-center group"
                      >
-                        <div className="col-span-1 md:col-span-5 flex items-center gap-4">
-                           <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-200 to-rose-200 flex items-center justify-center text-rose-700 font-black text-xl shadow-inner border border-rose-300">
+                        <div className="w-full md:col-span-5 flex items-center gap-4">
+                           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-pink-200 to-rose-200 flex items-center justify-center text-rose-700 font-black text-lg sm:text-xl shadow-inner border border-rose-300 shrink-0">
                              {user.email.charAt(0).toUpperCase()}
                            </div>
                            <div className="overflow-hidden">
-                              <p className="font-bold text-rose-950 truncate" title={user.email}>{user.email}</p>
-                              <p className="text-xs text-rose-500 font-medium translate-y-0.5">UID: <span className="font-mono text-[10px]">{user.id}</span></p>
+                              <p className="font-bold text-rose-950 text-sm sm:text-base truncate" title={user.email}>{user.email}</p>
+                              <p className="text-[10px] text-rose-400 font-bold uppercase tracking-wider">UID: {user.id.slice(0, 8)}...</p>
                            </div>
                         </div>
-                        <div className="col-span-1 md:col-span-2 text-left md:text-center text-rose-800 font-medium text-sm">
-                          {formatDate(user.createdAt)}
+                        <div className="md:col-span-2 text-rose-800 font-black text-[10px] sm:text-xs uppercase tracking-widest bg-white/50 px-3 py-1.5 rounded-lg border border-rose-100">
+                          Joined {formatDate(user.createdAt)}
                         </div>
-                        <div className="col-span-1 md:col-span-2 text-left md:text-center">
-                           <span className="font-black text-rose-600 bg-rose-50 px-3 py-1 rounded-lg border border-rose-100">
+                        <div className="md:col-span-2">
+                           <span className="font-black text-emerald-600 text-sm">
                              Rs. {user.totalSpent.toLocaleString()}
                            </span>
                         </div>
-                        <div className="col-span-1 md:col-span-2 text-left md:text-center">
-                           <span className="font-bold text-rose-800 text-sm">
+                        <div className="md:col-span-2">
+                           <span className="font-bold text-rose-500 text-[10px] sm:text-xs uppercase tracking-widest">
                              {user.orders.length} Order{user.orders.length !== 1 ? 's' : ''}
                            </span>
                         </div>
-                        <div className="col-span-1 text-right mt-2 md:mt-0">
-                           <button className={`w-8 h-8 rounded-full flex justify-center items-center inline-flex bg-white border border-rose-200 text-rose-500 group-hover:bg-rose-50 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
+                        <div className="hidden md:block md:col-span-1 text-right">
+                           <button className={`w-8 h-8 rounded-full flex justify-center items-center bg-white border border-rose-200 text-rose-500 group-hover:bg-rose-50 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
                            </button>
                         </div>

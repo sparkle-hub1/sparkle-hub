@@ -5,6 +5,7 @@ import { db } from '../firebase';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import HeroSlider from '../components/HeroSlider';
+import SEO from '../components/SEO';
 
 export default function Home() {
   const [featured, setFeatured] = useState([]);
@@ -54,6 +55,11 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] text-center space-y-16 animate-fade-in-up w-full text-rose-950">
+      <SEO 
+        title="Home" 
+        description="Shop the most exquisite handmade resin jewelry, personalized art, and customized gifts in Pakistan. Handcrafted with love at Sparkle Hub."
+        keywords="resin jewelry, handmade art pakistan, epoxy gifts, customized accessories, sparkle hub home"
+      />
 
       {/* Guest toast */}
       {guestToast && (

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 export default function TrackOrder() {
   const navigate = useNavigate();
@@ -57,6 +58,11 @@ export default function TrackOrder() {
 
   return (
     <div className="max-w-5xl mx-auto w-full pt-6 md:pt-16 pb-20 px-4 min-h-[85vh] flex flex-col items-center">
+      <SEO 
+        title="Track Order" 
+        description="Check the real-time status of your Sparkle Hub resin art order using your secure Order ID."
+        keywords="track order sparkle hub, resin order status, Pakistan handmade art tracking"
+      />
       
       {/* Search Section */}
       {!order && (

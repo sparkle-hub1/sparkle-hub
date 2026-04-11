@@ -4,6 +4,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import SEO from '../components/SEO';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -73,6 +74,12 @@ export default function ProductDetail() {
 
   return (
     <div className="max-w-6xl mx-auto w-full pt-4 md:pt-10 text-rose-950">
+      <SEO 
+        title={product.name}
+        description={product.description}
+        keywords={`resin ${product.name}, ${product.category}, customized resin art, buy ${product.name} pakistan`}
+        image={product.image}
+      />
 
       {/* Guest toast */}
       {guestToast && (

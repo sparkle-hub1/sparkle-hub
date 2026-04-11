@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import ConfirmActionModal from '../components/ConfirmActionModal';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import SEO from '../components/SEO';
 
 export default function Cart() {
   const { cart, cartTotal, updateQuantity, removeItem, customPictures, addCustomPicture, removeCustomPicture, activeOrderId } = useCart();
@@ -86,6 +87,10 @@ export default function Cart() {
 
   return (
     <div className="max-w-6xl mx-auto w-full pt-6 md:pt-14 pb-20 px-4 text-rose-950">
+      <SEO 
+        title="Your Cart" 
+        description="View and manage your selected resin art pieces in your Sparkle Hub shopping cart."
+      />
       <div className="flex flex-col mb-8 sm:mb-12">
         <h1 className="text-3xl sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-500 tracking-tight leading-none">Your Cart</h1>
         <p className="text-rose-400 font-bold uppercase tracking-widest text-[10px] sm:text-sm mt-2">{cart.length} Masterpieces selected</p>

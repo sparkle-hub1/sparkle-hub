@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 export default function Products() {
   const { addItem } = useCart();
@@ -73,6 +74,11 @@ export default function Products() {
 
   return (
     <div className="w-full text-rose-950 pt-6 pb-20 relative px-4 sm:px-6">
+      <SEO 
+        title={selectedCategory === 'All' ? 'Shop All Collections' : `Shop ${selectedCategory}`}
+        description={`Explore our beautiful ${selectedCategory === 'All' ? 'resin art' : selectedCategory} collection. Handcrafted jewelry and accessories delivered across Pakistan.`}
+        keywords={`resin art ${selectedCategory}, buy resin items online, sparkle hub shop, handmade jewelry pakistan`}
+      />
 
       {/* Guest toast notification */}
       {guestToast && (

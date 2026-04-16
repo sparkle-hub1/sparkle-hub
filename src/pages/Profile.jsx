@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import ConfirmLogoutModal from '../components/ConfirmLogoutModal';
 import ChangePasswordModal from '../components/ChangePasswordModal';
-import { doc, updateDoc } from 'firebase/firestore';
+import ReviewModal from '../components/ReviewModal';
 
 export default function Profile() {
   const { currentUser, logout, isAdmin } = useAuth();
@@ -17,6 +17,8 @@ export default function Profile() {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isSyncingPayment, setIsSyncingPayment] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [reviewModal, setReviewModal] = useState({ open: false, product: null });
+  const [reviewedProductIds, setReviewedProductIds] = useState(new Set());
 
   const handleOrderAgain = (order) => {
     if (!order.items || order.items.length === 0) return;
@@ -81,10 +83,10 @@ export default function Profile() {
         const q = query(collection(db, 'orders'), where('userId', '==', currentUser.uid));
         const snapshot = await getDocs(q);
         
-        const ordersList = snapshot.docs.map(doc => {
-          const data = doc.data();
+        const ordersList = snapshot.docs.map(d => {
+          const data = d.data();
           return {
-            id: doc.id,
+            id: d.id,
             ...data,
             dateObj: data.createdAt ? new Date(data.createdAt.toDate()) : new Date(0),
             date: data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString('en-US', {
@@ -101,11 +103,29 @@ export default function Profile() {
         setLoading(false);
       }
     };
+
+    const fetchReviewedProducts = async () => {
+      try {
+        const userRef = doc(db, 'users', currentUser.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          const data = userSnap.data();
+          setReviewedProductIds(new Set(data.reviewedProducts || []));
+        }
+      } catch (err) {
+        console.error("Error fetching reviewed products:", err);
+      }
+    };
     
     if (currentUser) {
       fetchMyOrders();
+      fetchReviewedProducts();
     }
   }, [currentUser]);
+
+  const handleReviewSuccess = (productId) => {
+    setReviewedProductIds(prev => new Set([...prev, productId]));
+  };
 
   const getStatusColor = (status) => {
     switch(status) {
@@ -210,12 +230,30 @@ export default function Profile() {
                    <p className="text-[10px] text-rose-400 font-black uppercase tracking-widest mb-4">Commissioned Details</p>
                    <div className="space-y-4">
                      {order.items?.slice(0, 3).map((item, idx) => (
-                       <div key={idx} className="flex items-center gap-4 bg-rose-50/50 p-2 rounded-xl border border-rose-50">
+                       <div key={idx} className="flex items-center gap-3 bg-rose-50/50 p-2 rounded-xl border border-rose-50">
                          <img src={item.image} alt={item.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover shadow-sm border border-white shrink-0" />
                          <div className="flex-1 min-w-0">
                            <p className="text-xs font-black text-rose-950 truncate">{item.name}</p>
                            <p className="text-[10px] text-rose-500 font-bold">Qty {item.quantity} {item.variation && <span className="font-black text-pink-600 ml-1"># {item.variation}</span>}</p>
                          </div>
+                         {order.orderStatus === 'Delivered' && (
+                           <div className="shrink-0">
+                             {reviewedProductIds.has(item.id) ? (
+                               <span className="text-[9px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-1 rounded-lg flex items-center gap-1">
+                                 <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                                 Reviewed
+                               </span>
+                             ) : (
+                               <button
+                                 onClick={() => setReviewModal({ open: true, product: item })}
+                                 className="text-[9px] font-black uppercase tracking-widest text-amber-600 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2 py-1 rounded-lg transition-colors flex items-center gap-1 active:scale-95"
+                               >
+                                 <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                 Rate
+                               </button>
+                             )}
+                           </div>
+                         )}
                        </div>
                      ))}
                      {order.items?.length > 3 && (
@@ -272,6 +310,14 @@ export default function Profile() {
       {isChangingPassword && (
         <ChangePasswordModal onClose={() => setIsChangingPassword(false)} />
       )}
+
+      <ReviewModal
+        isOpen={reviewModal.open}
+        onClose={() => setReviewModal({ open: false, product: null })}
+        productData={reviewModal.product}
+        currentUser={currentUser}
+        onReviewSuccess={handleReviewSuccess}
+      />
     </div>
   );
 }

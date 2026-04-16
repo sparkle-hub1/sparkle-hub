@@ -30,6 +30,7 @@ import ManageProducts from './pages/admin/ManageProducts';
 import ManageOrders from './pages/admin/ManageOrders';
 import ManageAdvertisements from './pages/admin/ManageAdvertisements';
 import ManageUsers from './pages/admin/ManageUsers';
+import ManageReviews from './pages/admin/ManageReviews';
 
 function App() {
   return (
@@ -67,6 +68,7 @@ function App() {
                 <Route path="products" element={<ManageProducts />} />
                 <Route path="orders" element={<ManageOrders />} />
                 <Route path="advertisements" element={<ManageAdvertisements />} />
+                <Route path="reviews" element={<ManageReviews />} />
               </Route>
             </Route>
           </Routes>

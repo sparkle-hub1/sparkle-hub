@@ -122,6 +122,14 @@ export default function AdminDashboard() {
           colorClassName="bg-violet-400"
           link="/admin/products"
         />
+        <StatCard 
+          title="Customer Reviews" 
+          value="★ Rate" 
+          subtitle="Manage & Reply to Reviews" 
+          icon="💬" 
+          colorClassName="bg-pink-400"
+          link="/admin/reviews"
+        />
       </div>
 
       <div className="mt-12 bg-white/95 border border-rose-100 rounded-[2.5rem] sm:rounded-[3rem] p-8 sm:p-14 shadow-[0_20px_50px_rgba(255,228,230,0.6)] relative overflow-hidden text-center">

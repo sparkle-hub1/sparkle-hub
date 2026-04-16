@@ -329,6 +329,13 @@ export default function ManageProducts() {
                       }
                     </td>
                     <td className="px-5 py-4 text-right whitespace-nowrap">
+                      <button 
+                        onClick={() => handleCopyLink(product.id)}
+                        className="text-rose-600 hover:text-rose-800 font-bold mr-4 transition-colors"
+                        title="Copy Live Link"
+                      >
+                        Link
+                      </button>
                       <button onClick={() => handleEdit(product)} className="text-sky-600 hover:text-sky-800 font-bold mr-4 transition-colors">Edit</button>
                       <button 
                         onClick={() => setProductToDelete({id: product.id, imageUrl: product.image})}

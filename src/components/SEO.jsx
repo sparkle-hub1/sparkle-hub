@@ -18,8 +18,8 @@ const SEO = ({
 }) => {
   const siteTitle = "Sparkle Hub";
   const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
-  const defaultDescription = "Premium handmade resin art and personalized jewelry in Pakistan. Customized gifts, coasters, and earrings.";
-  const defaultKeywords = "resin art, jewelry pakistan, handmade gifts, sparkle hub, epoxy art, customized accessories";
+  const defaultDescription = "Sparkle Hub (by Maryam) offers handmade resin art including custom keychains, coasters, jewelry, and personalized gifts in Pakistan. Unique epoxy resin crafts made with love for birthdays, weddings, and special occasions. Order custom designs online.";
+  const defaultKeywords = "resin art Pakistan, handmade resin products Pakistan, epoxy resin crafts, custom resin gifts Pakistan, personalized handmade gifts, resin business online Pakistan, small handmade business Pakistan, resin keychains custom name, resin coasters handmade, epoxy resin jewelry Pakistan, custom name plates resin, personalized gifts for her Pakistan, birthday gift handmade resin, wedding gift resin decor, resin art in Gujranwala, handmade gifts in Punjab Pakistan, custom resin gifts near me, online resin shop Pakistan, resin artist Pakistan, buy handmade gifts online Pakistan, custom gift ideas Pakistan, unique birthday gifts handmade, personalized gift shop Pakistan, aesthetic handmade gifts, resin art Pakistan, handmade resin products, custom resin gifts Pakistan, epoxy resin crafts, personalized gifts Pakistan, resin keychains custom, resin coasters handmade, resin jewelry Pakistan, small handmade business Pakistan, custom gifts online Pakistan, Resin by Maryam, Sparkle Hub";
 
   return (
     <Helmet>

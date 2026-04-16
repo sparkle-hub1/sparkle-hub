@@ -152,7 +152,6 @@ export default function Products() {
                 <Link to={`/product/${product.id}`} className="hover:text-pink-500 transition-colors">
                   <h3 className="text-sm sm:text-2xl font-black mb-1 sm:mb-2 text-rose-950 leading-tight line-clamp-1">{product.name}</h3>
                 </Link>
-                <p className="text-rose-800/60 text-[10px] sm:text-base mb-2 sm:mb-6 line-clamp-1 leading-relaxed font-medium hidden sm:block">{product.description}</p>
               </div>
               
               <div className="mt-auto flex flex-col z-10 pt-2 sm:pt-6 border-t border-rose-100/80 gap-2 sm:gap-6">

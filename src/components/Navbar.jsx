@@ -262,67 +262,72 @@ export default function Navbar() {
       </div>
 
       {/* ── MOBILE DRAWER ── */}
-      <div className={`md:hidden absolute w-full bg-white/95 backdrop-blur-3xl border-b border-rose-100 shadow-xl transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[600px] opacity-100 py-4' : 'max-h-0 opacity-0 overflow-hidden py-0'}`}>
-        <div className="flex flex-col space-y-1 pb-2">
-          <Link to="/" onClick={handleLinkClick} className={`px-4 py-2 font-semibold hover:text-pink-600 transition-colors ${location.pathname === '/' ? 'text-pink-600' : 'text-rose-800'}`}>Home</Link>
+      <div className={`md:hidden absolute w-full left-0 right-0 bg-white/98 backdrop-blur-2xl border-b border-rose-200 shadow-[0_30px_60px_rgba(255,228,230,0.4)] transition-all duration-[400ms] ease-out overflow-hidden ${isOpen ? 'max-h-[85vh] opacity-100' : 'max-h-0 opacity-0'}`}>
+        <div className="flex flex-col pt-2 pb-6 px-4">
+          <Link to="/" onClick={handleLinkClick} className={`px-4 py-3.5 text-[15px] font-black tracking-wide border-b border-rose-50 transition-all rounded-xl ${location.pathname === '/' ? 'text-pink-600 bg-rose-50/50' : 'text-rose-900 hover:bg-rose-50/30'}`}>Home</Link>
 
-          {/* Mobile Collections accordion — NO ref here */}
-          <div className="px-4 py-2">
+          {/* Mobile Collections accordion */}
+          <div className="border-b border-rose-50">
             <button
               onClick={() => setIsMobileAccordionOpen(prev => !prev)}
-              className={`flex items-center gap-1.5 font-semibold outline-none select-none w-full ${isCollectionsActive ? 'text-pink-600' : 'text-rose-800'}`}
+              className={`flex items-center justify-between w-full px-4 py-3.5 text-[15px] font-black tracking-wide transition-all rounded-xl outline-none select-none ${isCollectionsActive ? 'text-pink-600 bg-rose-50/50' : 'text-rose-900 hover:bg-rose-50/30'}`}
             >
-              <svg className="w-3.5 h-3.5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h7" />
-              </svg>
-              Collections
-              <svg className={`w-3.5 h-3.5 ml-1 transition-transform duration-300 ${isMobileAccordionOpen ? 'rotate-180 text-pink-500' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h7" />
+                </svg>
+                Collections
+              </div>
+              <svg className={`w-4 h-4 transition-transform duration-300 ${isMobileAccordionOpen ? 'rotate-180 text-pink-500' : 'text-rose-300'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-            <div className={`overflow-hidden transition-all duration-300 ${isMobileAccordionOpen ? 'max-h-72 opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
-              <div className="flex flex-col border-l-2 border-rose-200 pl-4 space-y-0.5">
+            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isMobileAccordionOpen ? 'max-h-[400px] opacity-100 mt-1 mb-2' : 'max-h-0 opacity-0'}`}>
+              <div className="flex flex-col pl-4 space-y-1">
                 {categories.length > 0 ? categories.map((cat, idx) => (
                   <Link
                     key={idx}
                     to={`/products?category=${encodeURIComponent(cat)}`}
                     onClick={handleLinkClick}
-                    className="flex items-center gap-2 py-2.5 text-sm font-bold text-rose-700 hover:text-pink-600 transition-colors"
+                    className="flex items-center gap-3 py-3 px-4 text-sm font-bold text-rose-700 hover:text-pink-600 transition-colors bg-rose-50/30 rounded-xl"
                   >
-                    <span className="text-xs">💎</span>{cat}
+                    <span className="w-6 h-6 flex items-center justify-center bg-white rounded-md shadow-sm border border-rose-100 text-xs">💎</span>
+                    {cat}
                   </Link>
                 )) : (
-                  <p className="text-sm text-rose-400 py-2 font-medium">No collections found</p>
+                  <p className="text-sm text-rose-400 py-3 px-4 font-medium italic">No collections found</p>
                 )}
               </div>
             </div>
           </div>
 
-          <Link to="/products" onClick={handleLinkClick} className={`px-4 py-2 font-semibold hover:text-pink-600 transition-colors ${(location.pathname === '/products' && !location.search.includes('category')) ? 'text-pink-600' : 'text-rose-800'}`}>Shop</Link>
-          <Link to="/track-order" onClick={handleLinkClick} className={`px-4 py-2 font-semibold hover:text-pink-600 transition-colors ${location.pathname === '/track-order' ? 'text-pink-600' : 'text-rose-800'}`}>Track Order</Link>
+          <Link to="/products" onClick={handleLinkClick} className={`px-4 py-3.5 text-[15px] font-black tracking-wide border-b border-rose-50 transition-all rounded-xl ${(location.pathname === '/products' && !location.search.includes('category')) ? 'text-pink-600 bg-rose-50/50' : 'text-rose-900 hover:bg-rose-50/30'}`}>Shop All</Link>
+          <Link to="/track-order" onClick={handleLinkClick} className={`px-4 py-3.5 text-[15px] font-black tracking-wide border-b border-rose-50 transition-all rounded-xl ${location.pathname === '/track-order' ? 'text-pink-600 bg-rose-50/50' : 'text-rose-900 hover:bg-rose-50/30'}`}>Track Order</Link>
 
           {currentUser && (
-            <Link to="/cart" onClick={handleLinkClick} className={`px-4 py-2 font-semibold hover:text-pink-600 transition-colors flex items-center ${location.pathname === '/cart' ? 'text-pink-600' : 'text-rose-800'}`}>
-              Cart
-              {cartCount > 0 && <span className="ml-1 bg-gradient-to-r from-pink-400 to-rose-400 text-[10px] font-bold text-white rounded-full px-2 py-0.5 shadow-md animate-pulse">{cartCount}</span>}
+            <Link to="/cart" onClick={handleLinkClick} className={`px-4 py-3.5 text-[15px] font-black tracking-wide border-b border-rose-50 transition-all rounded-xl flex justify-between items-center ${location.pathname === '/cart' ? 'text-pink-600 bg-rose-50/50' : 'text-rose-900 hover:bg-rose-50/30'}`}>
+              My Cart
+              {cartCount > 0 && <span className="bg-gradient-to-r from-pink-500 to-rose-500 text-xs font-black text-white rounded-full px-2.5 py-1 shadow-md animate-bounce">{cartCount} items</span>}
             </Link>
           )}
 
           {isAdmin && (
-            <Link to="/admin" onClick={handleLinkClick} className="text-cyan-700 hover:text-cyan-900 font-bold border border-cyan-400/50 hover:bg-cyan-50 px-4 py-2 mx-4 rounded-full transition-all text-center">
-              Admin Dashboard
-            </Link>
+            <div className="pt-4 pb-2">
+              <Link to="/admin" onClick={handleLinkClick} className="block w-full text-cyan-800 bg-cyan-50 font-black border-2 border-cyan-200 py-3 rounded-2xl transition-all text-center">
+                Admin Dashboard
+              </Link>
+            </div>
           )}
 
           {currentUser ? (
-            <div className="flex flex-col border-t border-rose-100 mt-2 pt-2 space-y-0.5">
-              <Link to="/profile" onClick={handleLinkClick} className="px-4 py-2 font-bold text-rose-800 hover:text-pink-600 transition-colors">Profile</Link>
-              <button onClick={() => { setIsLogoutModalOpen(true); handleLinkClick(); }} className="px-4 py-2 font-bold text-red-500 hover:text-red-700 transition-colors text-left">Logout</button>
+            <div className="flex space-x-3 mt-4">
+              <Link to="/profile" onClick={handleLinkClick} className="flex-1 py-3 text-center bg-rose-50 font-black text-rose-900 border border-rose-100 rounded-2xl transition-colors">Profile</Link>
+              <button onClick={() => { setIsLogoutModalOpen(true); handleLinkClick(); }} className="flex-1 py-3 text-center bg-red-50 font-black text-red-600 border border-red-100 rounded-2xl transition-colors">Logout</button>
             </div>
           ) : (
-            <div className="px-4 mt-2">
-              <Link to="/login" onClick={handleLinkClick} className="block bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 px-6 py-3 rounded-full font-bold transition-all shadow-md text-center text-white">
-                Login
+            <div className="mt-6 mb-2">
+              <Link to="/login" onClick={handleLinkClick} className="block w-full bg-gradient-to-r from-pink-500 to-rose-500 py-3.5 rounded-2xl font-black text-[15px] transition-all shadow-[0_8px_20px_rgba(244,114,182,0.3)] text-center text-white active:scale-95">
+                Login / Register
               </Link>
             </div>
           )}

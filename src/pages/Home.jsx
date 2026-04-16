@@ -82,9 +82,9 @@ export default function Home() {
             </Link>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-8 mt-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8 mt-4">
             {featured.map(product => (
-              <div key={product.id} className="bg-white/90 border border-white rounded-[1.2rem] sm:rounded-[2.5rem] p-2 sm:p-7 backdrop-blur-md hover:bg-white transition-all duration-500 hover:-translate-y-2 group shadow-[0_10px_40px_rgba(255,228,230,0.4)] flex flex-col relative overflow-hidden">
+              <div key={product.id} className="bg-white/90 border border-white rounded-[1.5rem] sm:rounded-[2.5rem] p-3 sm:p-7 backdrop-blur-md hover:bg-white transition-all duration-500 hover:-translate-y-2 group shadow-[0_10px_40px_rgba(255,228,230,0.4)] flex flex-col relative overflow-hidden">
                 
                 <Link to={`/product/${product.id}`} className="block aspect-square bg-rose-50/50 rounded-xl sm:rounded-[1.8rem] mb-2 sm:mb-6 overflow-hidden relative border border-rose-100/50 cursor-pointer z-10 w-full group/img">
                   {product.discount > 0 && (
@@ -112,21 +112,21 @@ export default function Home() {
                   <p className="text-rose-800/60 text-[10px] sm:text-base mb-2 sm:mb-6 line-clamp-1 leading-relaxed font-medium hidden sm:block">{product.description}</p>
                 </div>
                 
-                <div className="mt-auto flex flex-col z-10 pt-2 sm:pt-6 border-t border-rose-100/80 gap-2 sm:gap-6">
-                  <div className="flex justify-between items-center bg-rose-50/30 p-1.5 sm:p-4 rounded-xl sm:rounded-2xl border border-rose-100/30">
+                <div className="mt-auto flex flex-col z-10 pt-3 sm:pt-6 border-t border-rose-100/80 gap-3 sm:gap-6">
+                  <div className="flex justify-between items-center bg-rose-50/30 p-2 sm:p-4 rounded-xl sm:rounded-2xl border border-rose-100/30">
                     <div className="flex flex-col justify-center">
-                      {product.discount > 0 && <span className="text-rose-400 font-bold line-through text-[7px] sm:text-xs leading-none mb-0.5 sm:mb-1">PKR {product.price}</span>}
+                      {product.discount > 0 && <span className="text-rose-400 font-bold line-through text-[9px] sm:text-xs leading-none mb-0.5 sm:mb-1">PKR {product.price}</span>}
                       <p className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-500 font-black text-sm sm:text-2xl leading-none">
                         PKR {product.discount > 0 ? Math.floor(product.price * (1 - product.discount / 100)) : product.price}
                       </p>
                     </div>
                     {product.deliveryCharge > 0 ? (
                       <div className="flex flex-col items-end">
-                        <span className="text-[6px] sm:text-[10px] text-rose-300 font-bold uppercase tracking-widest leading-none mb-0.5 sm:mb-1">Shipping</span>
-                        <span className="text-[8px] sm:text-sm font-black text-amber-600 leading-none">Rs. {product.deliveryCharge}</span>
+                        <span className="text-[8px] sm:text-[10px] text-rose-300 font-bold uppercase tracking-widest leading-none mb-0.5 sm:mb-1">Shipping</span>
+                        <span className="text-[9px] sm:text-sm font-black text-amber-600 leading-none">Rs. {product.deliveryCharge}</span>
                       </div>
                     ) : (
-                      <span className="text-[7px] sm:text-[11px] font-black text-emerald-500 uppercase tracking-widest py-1 px-2 sm:px-4 bg-emerald-50/50 rounded-full border border-emerald-100 shadow-sm">Free Delivery</span>
+                      <span className="text-[9px] sm:text-[11px] font-black text-emerald-500 uppercase tracking-widest py-1 px-2.5 sm:px-4 bg-emerald-50/50 rounded-full border border-emerald-100 shadow-sm text-center leading-tight">Free<br className="sm:hidden"/> Delivery</span>
                     )}
                   </div>
 
@@ -137,9 +137,10 @@ export default function Home() {
                           e.preventDefault();
                           handleAddToCart(product);
                         }}
-                        className="flex-1 py-1.5 sm:py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-lg sm:rounded-2xl text-[10px] sm:text-lg font-black transition-all shadow-md active:scale-95 uppercase tracking-tighter sm:tracking-normal"
+                        className="flex-1 py-2 sm:py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-xl sm:rounded-2xl text-[11px] sm:text-lg font-black transition-all shadow-md active:scale-95 uppercase tracking-wide flex items-center justify-center gap-1"
                       >
-                        Add Items
+                        <span className="sm:hidden">+ Cart</span>
+                        <span className="hidden sm:inline">Add Items</span>
                       </button>
                       <a
                         href={`https://wa.me/923238750695?text=Hi! I'm interested in: ${encodeURIComponent(product.name)}`}

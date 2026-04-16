@@ -7,6 +7,7 @@ import { CartProvider } from './context/CartContext';
 import PublicLayout from './layouts/PublicLayout';
 import AdminLayout from './layouts/AdminLayout';
 import ProtectedRoute from './components/ProtectedRoute';
+import ScrollToTop from './components/ScrollToTop';
 
 // Public Pages
 import Home from './pages/Home';
@@ -35,6 +36,7 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
+          <ScrollToTop />
           <Routes>
             {/* Public Routes with Navbar & Footer */}
             <Route element={<PublicLayout />}>

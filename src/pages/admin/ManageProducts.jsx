@@ -115,6 +115,16 @@ export default function ManageProducts() {
     }
   };
 
+  const handleCopyLink = (productId) => {
+    const link = `${window.location.origin}/product/${productId}`;
+    navigator.clipboard.writeText(link)
+      .then(() => showToast('Product link copied to clipboard!'))
+      .catch(err => {
+        console.error('Failed to copy helpLink:', err);
+        showToast('Link copying failed.', 'error');
+      });
+  };
+
   const handleInputChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -377,6 +387,13 @@ export default function ManageProducts() {
                             </span>
                          </div>
                          <div className="flex items-center gap-3">
+                           <button 
+                             onClick={() => handleCopyLink(product.id)}
+                             className="text-[10px] font-black text-rose-500 uppercase tracking-widest bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-100 hover:bg-rose-100 hover:scale-105 transition-all outline-none"
+                             title="Copy Live Link"
+                           >
+                             Link
+                           </button>
                            <button onClick={() => handleEdit(product)} className="text-[10px] font-black text-sky-600 uppercase tracking-widest bg-sky-50 px-3 py-1.5 rounded-lg border border-sky-100">Edit</button>
                            <button 
                              onClick={() => setProductToDelete({id: product.id, imageUrl: product.image})}

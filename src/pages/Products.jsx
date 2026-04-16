@@ -49,7 +49,7 @@ export default function Products() {
       }, 1800);
       return;
     }
-    addItem({ ...product, variation: product.variations?.[0] || 'Standard' });
+    addItem({ ...product, productId: product.id, variation: product.variations?.[0] || 'Standard' });
   };
 
   const setCategory = (cat) => {
@@ -201,6 +201,12 @@ export default function Products() {
                 <Link to={`/product/${product.id}`} className="hover:text-pink-500 transition-colors">
                   <h3 className="text-sm sm:text-xl font-black text-rose-950 line-clamp-2 leading-[1.2] mb-1">{product.name}</h3>
                 </Link>
+                {product.orderCount > 0 && (
+                  <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] font-black text-rose-500 mb-1">
+                    <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z"/></svg>
+                    {product.orderCount} ordered
+                  </span>
+                )}
                 
                 <div className="mt-auto pt-1 flex flex-col gap-0.5 mb-1">
                   <div className="flex items-end gap-1.5 sm:gap-2">

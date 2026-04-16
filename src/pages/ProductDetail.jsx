@@ -127,7 +127,7 @@ export default function ProductDetail() {
     }
     const variationSuffix = selectedVariation ? `-${selectedVariation.toLowerCase().replace(/\s+/g, '-')}` : '';
     const cartItemId = `${product.id}${variationSuffix}`;
-    addItem({ ...product, id: cartItemId, variation: selectedVariation });
+    addItem({ ...product, id: cartItemId, productId: product.id, variation: selectedVariation });
   };
 
   const avgRating = product.averageRating || 0;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Navigate } from 'react-router-dom';
-import { doc, updateDoc, getDoc } from 'firebase/firestore';
+import { doc, updateDoc, getDoc, increment } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useCart } from '../context/CartContext';
 import { sendOrderStatusEmail } from '../utils/emailService';
@@ -83,6 +83,24 @@ export default function Payment() {
         const customerName = orderData.customerDetails?.name || 'Valued Customer';
         const customerEmail = orderData.userEmail;
         const totalAmount = orderData.totalAmount || grandTotal;
+
+        // Increment orderCount on each unique product in this order
+        const items = orderData.items || [];
+        const seenProductIds = new Set();
+        for (const item of items) {
+          // Prefer the explicitly stored productId field; fall back to item.id for legacy orders
+          const baseProductId = item.productId || item.id;
+          if (baseProductId && !seenProductIds.has(baseProductId)) {
+            seenProductIds.add(baseProductId);
+            try {
+              await updateDoc(doc(db, 'products', baseProductId), {
+                orderCount: increment(1)
+              });
+            } catch (productErr) {
+              console.warn('Could not increment orderCount for:', baseProductId, productErr);
+            }
+          }
+        }
 
         if (customerEmail) {
           sendOrderStatusEmail(customerEmail, customerName, orderId, totalAmount, 'Pending')

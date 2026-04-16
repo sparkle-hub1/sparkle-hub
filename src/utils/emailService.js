@@ -104,24 +104,29 @@ export async function sendOrderStatusEmail(toEmail, toName, orderId, grandTotal,
 
   // Determine visibility of order-specific details
   const isWelcome = status === 'Welcome';
+
+  // The live Track Order URL — hardcoded to production so it works from any context
+  const trackOrderUrl = 'https://sparkle-hub.vercel.app/track-order';
   
   const templateParams = {
-    to_email:        toEmail,
-    to_name:         toName,
-    order_id:        orderId || 'NEW_MEMBER',
-    grand_total:     grandTotal ? `PKR ${Number(grandTotal).toFixed(0)}` : 'N/A',
-    order_status:    status,
-    status_emoji:    theme.status_emoji,
-    status_title:    theme.status_title,
-    status_badge:    theme.status_badge,
-    badge_bg:        theme.badge_bg,
-    badge_color:     theme.badge_color,
-    status_message:  theme.status_message,
-    next_step:       theme.next_step,
-    details_visibility: isWelcome ? 'none' : 'table',  // CSS display property
-    section_title:    isWelcome ? 'Member Information' : 'Order Details',
-    store_name:      'Sparkle Hub',
-    shop_url:        window.location.origin,
+    to_email:           toEmail,
+    to_name:            toName,
+    order_id:           orderId || 'NEW_MEMBER',
+    grand_total:        grandTotal ? `PKR ${Number(grandTotal).toFixed(0)}` : 'N/A',
+    order_status:       status,
+    status_emoji:       theme.status_emoji,
+    status_title:       theme.status_title,
+    status_badge:       theme.status_badge,
+    badge_bg:           theme.badge_bg,
+    badge_color:        theme.badge_color,
+    status_message:     theme.status_message,
+    next_step:          theme.next_step,
+    details_visibility: isWelcome ? 'none' : 'table',
+    section_title:      isWelcome ? 'Member Information' : 'Order Details',
+    store_name:         'Sparkle Hub',
+    shop_url:           'https://sparkle-hub.vercel.app',
+    track_order_url:    trackOrderUrl,
+    show_track_btn:     isWelcome ? 'none' : 'inline-block',
   };
 
   return emailjs.send(

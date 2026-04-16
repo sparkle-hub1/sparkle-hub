@@ -17,6 +17,7 @@ export default function Products() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [guestToast, setGuestToast] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -68,9 +69,11 @@ export default function Products() {
     );
   }
 
-  const displayedProducts = selectedCategory === 'All' 
-    ? allProducts 
-    : allProducts.filter(p => p.category === selectedCategory);
+  const displayedProducts = allProducts.filter(p => {
+    const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <div className="w-full text-rose-950 pt-6 pb-20 relative px-4 sm:px-6">
@@ -93,7 +96,33 @@ export default function Products() {
         <h2 className="text-[2.2rem] sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-500 tracking-tight drop-shadow-sm leading-none pb-2">
           {selectedCategory === 'All' ? 'Our Collections' : selectedCategory}
         </h2>
-        <p className="text-rose-800/50 font-bold mt-2 text-sm sm:text-lg uppercase tracking-widest">Handcrafted Resin Masterpieces</p>
+        <p className="text-rose-800/50 font-bold mt-2 text-sm sm:text-lg uppercase tracking-widest mb-8">Handcrafted Resin Masterpieces</p>
+
+        {/* Professional Search Bar */}
+        <div className="max-w-md mx-auto relative group">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <svg className="h-5 w-5 text-rose-400 group-focus-within:text-pink-500 transition-colors" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            className="block w-full pl-11 pr-4 py-3.5 border-2 border-rose-100 rounded-2xl leading-5 bg-white placeholder-rose-300 text-rose-900 font-bold focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-400 transition-all shadow-[0_8px_20px_rgba(255,228,230,0.5)] outline-none"
+            placeholder="Search our masterpieces..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          {searchQuery && (
+            <button 
+              onClick={() => setSearchQuery('')}
+              className="absolute inset-y-0 right-0 pr-4 flex items-center text-rose-300 hover:text-rose-500 transition-colors"
+            >
+              <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Category Pill Filter Bar */}
@@ -117,11 +146,15 @@ export default function Products() {
       {displayedProducts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center bg-rose-50/50 rounded-[3rem] border border-rose-100">
           <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm">
-            <span className="text-4xl">✨</span>
+            <span className="text-4xl">{searchQuery ? '🔍' : '✨'}</span>
           </div>
-          <h3 className="text-xl font-black text-rose-900 mb-2">Coming Soon</h3>
+          <h3 className="text-xl font-black text-rose-900 mb-2">
+            {searchQuery ? 'No Results Found' : 'Coming Soon'}
+          </h3>
           <p className="text-rose-800/60 font-medium max-w-xs text-sm">
-            We are currently crafting new pieces for this collection.
+            {searchQuery 
+              ? `We couldn't find any masterpieces matching "${searchQuery}". Try a different keyword.` 
+              : 'We are currently crafting new pieces for this collection.'}
           </p>
         </div>
       ) : (

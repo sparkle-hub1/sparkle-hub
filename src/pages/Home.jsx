@@ -139,7 +139,7 @@ export default function Home() {
                         className="flex-1 py-2 sm:py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-xl sm:rounded-2xl text-[11px] sm:text-lg font-black transition-all shadow-md active:scale-95 uppercase tracking-wide flex items-center justify-center gap-1"
                       >
                         <span className="sm:hidden">+ Cart</span>
-                        <span className="hidden sm:inline">Add Items</span>
+                        <span className="hidden sm:inline">Add To Cart</span>
                       </button>
                       <a
                         href={`https://wa.me/923238750695?text=Hi! I'm interested in: ${encodeURIComponent(product.name)}`}

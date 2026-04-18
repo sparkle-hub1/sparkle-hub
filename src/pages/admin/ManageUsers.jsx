@@ -7,6 +7,7 @@ export default function ManageUsers() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedUserId, setExpandedUserId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -59,6 +60,12 @@ export default function ManageUsers() {
     };
   });
 
+  const filteredUsers = enrichedUsers.filter(user => {
+    const isNameMatch = (user.displayName || user.name || '').toLowerCase().includes(searchQuery.toLowerCase());
+    const isEmailMatch = (user.email || '').toLowerCase().includes(searchQuery.toLowerCase());
+    return isNameMatch || isEmailMatch;
+  });
+
   return (
     <div className="max-w-7xl mx-auto w-full pt-4 sm:pt-8 animate-fade-in-up">
       <div className="mb-8 sm:mb-10 text-center sm:text-left text-rose-950 flex flex-col md:flex-row justify-between items-center gap-6">
@@ -79,16 +86,30 @@ export default function ManageUsers() {
         </div>
       </div>
 
+      {/* Professional Search */}
+      <div className="bg-white p-5 sm:p-6 rounded-[2rem] border border-rose-100 shadow-sm mb-6 flex flex-col md:flex-row gap-4 items-center">
+        <div className="flex-1 w-full relative">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-rose-300">🔍</span>
+          <input 
+            type="text" 
+            placeholder="Search by User Name or Email..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-11 pr-4 py-3.5 bg-rose-50/50 border border-rose-100 rounded-xl outline-none focus:border-pink-300 focus:ring-4 focus:ring-pink-50 transition-all font-bold text-rose-900 placeholder-rose-300 text-sm"
+          />
+        </div>
+      </div>
+
       {loading ? (
         <div className="min-h-[40vh] flex flex-col items-center justify-center gap-4">
           <div className="w-12 h-12 border-4 border-pink-400 border-t-transparent rounded-full animate-spin"></div>
           <p className="text-rose-800 font-bold animate-pulse">Loading customer profiles...</p>
         </div>
-      ) : enrichedUsers.length === 0 ? (
+      ) : filteredUsers.length === 0 ? (
         <div className="text-center py-16 bg-white/80 border border-white rounded-[2rem] shadow-sm backdrop-blur-md">
           <span className="text-6xl block mb-4">👥</span>
-          <h3 className="text-rose-950 font-black text-2xl mb-2">No users registered yet</h3>
-          <p className="text-rose-800/70 font-medium">Once a customer signs up, their profile and history will appear here.</p>
+          <h3 className="text-rose-950 font-black text-2xl mb-2">No users found</h3>
+          <p className="text-rose-800/70 font-medium">Try checking your search spelling or filters.</p>
         </div>
       ) : (
         <div className="bg-white/80 border border-white rounded-[2rem] shadow-[0_20px_50px_rgba(255,228,230,0.5)] backdrop-blur-md overflow-hidden flex flex-col">
@@ -104,8 +125,10 @@ export default function ManageUsers() {
 
           {/* User List Accordion */}
           <div className="divide-y divide-rose-100 flex-1 overflow-y-auto">
-            {enrichedUsers.map((user) => {
+            {filteredUsers.map((user) => {
                const isExpanded = expandedUserId === user.id;
+               const userName = user.displayName || user.name || 'Anonymous User';
+               const userInitial = userName !== 'Anonymous User' ? userName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase();
 
                return (
                   <div key={user.id} className="transition-all duration-300 hover:bg-rose-50/30">
@@ -116,11 +139,12 @@ export default function ManageUsers() {
                      >
                         <div className="w-full md:col-span-5 flex items-center gap-4">
                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-pink-200 to-rose-200 flex items-center justify-center text-rose-700 font-black text-lg sm:text-xl shadow-inner border border-rose-300 shrink-0">
-                             {user.email.charAt(0).toUpperCase()}
+                             {userInitial}
                            </div>
                            <div className="overflow-hidden">
-                              <p className="font-bold text-rose-950 text-sm sm:text-base truncate" title={user.email}>{user.email}</p>
-                              <p className="text-[10px] text-rose-400 font-bold uppercase tracking-wider">UID: {user.id.slice(0, 8)}...</p>
+                              <p className="font-bold text-rose-950 text-sm sm:text-base truncate" title={userName}>{userName}</p>
+                              <p className="text-xs text-rose-600 truncate" title={user.email}>{user.email}</p>
+                              <p className="text-[10px] text-rose-400 font-bold uppercase tracking-wider mt-0.5">UID: {user.id.slice(0, 8)}...</p>
                            </div>
                         </div>
                         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto md:col-span-6 md:justify-between">

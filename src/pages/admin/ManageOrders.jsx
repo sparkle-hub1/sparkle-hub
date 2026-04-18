@@ -17,6 +17,8 @@ export default function ManageOrders() {
   const [orderToDelete, setOrderToDelete] = useState(null);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [pdfImageMap, setPdfImageMap] = useState({}); // base64 map for PDF image pre-loading
+  const [searchQuery, setSearchQuery] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
 
   const fetchOrders = async () => {
     try {
@@ -175,6 +177,28 @@ export default function ManageOrders() {
     }
   };
 
+  const filteredOrders = orders.filter(order => {
+    const matchesSearch = 
+      order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (order.customerDetails?.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (order.userEmail || '').toLowerCase().includes(searchQuery.toLowerCase());
+    
+    // dateFilter is yyyy-mm-dd, order.date is something like "M/D/YYYY, hh:mm:ss A"
+    // convert order.createdAt to YYYY-MM-DD for easier comparison if available
+    let matchesDate = true;
+    if (dateFilter) {
+        if(order.createdAt) {
+           const orderDate = new Date(order.createdAt.seconds * 1000);
+           const localDateStr = orderDate.toLocaleDateString('en-CA'); // YYYY-MM-DD format usually
+           matchesDate = localDateStr === dateFilter;
+        } else {
+            matchesDate = false;
+        }
+    }
+
+    return matchesSearch && matchesDate;
+  });
+
   return (
     <div className="animate-fade-in-up">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 sm:mb-10 gap-6 border-b border-rose-100 pb-6">
@@ -185,6 +209,38 @@ export default function ManageOrders() {
         <button onClick={fetchOrders} className="w-full lg:w-auto px-5 py-3.5 bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-pink-600 rounded-xl font-bold shadow-sm transition-all flex items-center justify-center gap-2 active:scale-95">
           <span>🔄</span> Refresh Pipeline
         </button>
+      </div>
+
+      {/* Professional Search & Filters */}
+      <div className="bg-white p-5 sm:p-6 rounded-[2rem] border border-rose-100 shadow-sm mb-6 flex flex-col md:flex-row gap-4 items-center">
+        <div className="flex-1 w-full relative">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-rose-300">🔍</span>
+          <input 
+            type="text" 
+            placeholder="Search by Order REF, Name or Email..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-11 pr-4 py-3.5 bg-rose-50/50 border border-rose-100 rounded-xl outline-none focus:border-pink-300 focus:ring-4 focus:ring-pink-50 transition-all font-bold text-rose-900 placeholder-rose-300 text-sm"
+          />
+        </div>
+        <div className="w-full md:w-auto flex items-center gap-3">
+          <span className="text-[10px] sm:text-xs font-black text-rose-400 uppercase tracking-widest shrink-0">Filter by Date:</span>
+          <input 
+            type="date" 
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+            className="w-full md:w-auto px-4 py-3.5 bg-rose-50/50 border border-rose-100 rounded-xl outline-none focus:border-pink-300 focus:ring-4 focus:ring-pink-50 transition-all font-bold text-rose-900 text-sm cursor-pointer"
+          />
+          {dateFilter && (
+             <button 
+               onClick={() => setDateFilter('')}
+               className="p-3 bg-rose-100 text-rose-500 hover:bg-rose-200 rounded-xl font-bold transition-all"
+               title="Clear Date Filter"
+             >
+               ✕
+             </button>
+          )}
+        </div>
       </div>
 
       <div className="bg-white/95 border border-white rounded-[2rem] shadow-[0_20px_60px_rgba(255,228,230,0.8)] backdrop-blur-xl overflow-hidden relative">
@@ -212,12 +268,12 @@ export default function ManageOrders() {
                     </div>
                   </td>
                 </tr>
-              ) : orders.length === 0 ? (
+              ) : filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-12 text-center text-rose-500 font-medium">No transactions available in the database.</td>
+                  <td colSpan="6" className="px-6 py-12 text-center text-rose-500 font-medium">No transactions match your search/filter.</td>
                 </tr>
               ) : (
-                orders.map(order => (
+                filteredOrders.map(order => (
                   <tr key={order.id} className="hover:bg-rose-50/50 transition-colors group">
                     <td className="px-6 py-4">
                       <span className="font-mono text-sm font-bold text-rose-900 bg-rose-50 px-2 py-1 rounded border border-rose-100">{order.id}</span>
@@ -264,10 +320,10 @@ export default function ManageOrders() {
                 <div className="w-6 h-6 border-4 border-rose-300 border-t-transparent rounded-full animate-spin"></div>
                 Syncing Pipeline...
               </div>
-            ) : orders.length === 0 ? (
-              <div className="px-6 py-12 text-center text-rose-500 font-medium">No transactions found.</div>
+            ) : filteredOrders.length === 0 ? (
+              <div className="px-6 py-12 text-center text-rose-500 font-medium">No transactions match your search.</div>
             ) : (
-              orders.map(order => (
+              filteredOrders.map(order => (
                 <div key={order.id} className="p-5 flex flex-col gap-4 animate-fade-in-up">
                   <div className="flex justify-between items-start">
                     <span className="font-mono text-[10px] font-black text-rose-400 bg-rose-50 px-2 py-1 rounded border border-rose-100 uppercase tracking-wider">REF: {order.id.slice(-8).toUpperCase()}</span>

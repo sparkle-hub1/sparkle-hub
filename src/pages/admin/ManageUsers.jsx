@@ -186,9 +186,11 @@ export default function ManageUsers() {
                                    <React.Fragment key={order.id}>
                                    <div className="bg-white border border-rose-100 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:shadow-md transition-shadow">
                                       <div className="flex flex-col gap-1">
-                                         <div className="flex items-center gap-2">
-                                           <span className="font-mono text-xs font-bold text-rose-400">#{order.id.slice(-6).toUpperCase()}</span>
-                                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border uppercase tracking-widest ${getOrderStatusColor(order.orderStatus)}`}>
+                                         <div className="flex flex-wrap items-center gap-2">
+                                           <span className="font-mono text-[10px] font-black text-rose-500 bg-rose-50 px-2.5 py-1 rounded border border-rose-100 uppercase tracking-wider">
+                                              REF: {order.id}
+                                           </span>
+                                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-widest shadow-sm ${getOrderStatusColor(order.orderStatus)}`}>
                                               {order.orderStatus}
                                            </span>
                                          </div>

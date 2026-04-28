@@ -8,11 +8,12 @@ import { db } from '../firebase';
 const STEP = {
   LOGIN: 'LOGIN',
   SIGNUP: 'SIGNUP',
-  OTP: 'OTP'
+  OTP: 'OTP',
+  FORGOT: 'FORGOT'
 };
 
 export default function Login() {
-  const { currentUser, isAdmin, login, signup, loginWithGoogle } = useAuth();
+  const { currentUser, isAdmin, login, signup, loginWithGoogle, resetPassword } = useAuth();
   const navigate = useNavigate();
 
   const [step, setStep] = useState(STEP.LOGIN);
@@ -59,6 +60,25 @@ export default function Login() {
       await login(email, password);
     } catch (err) {
       setError("Invalid email or password. Please try again.");
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    if (!email.trim()) {
+      setError("Please enter your email address to reset password.");
+      return;
+    }
+    resetErrors();
+    setLoading(true);
+    try {
+      await resetPassword(email);
+      setSuccess("A password reset link has been sent to your email address.");
+      setStep(STEP.LOGIN);
+    } catch (err) {
+      setError(err.message.replace('Firebase: ', ''));
+    } finally {
       setLoading(false);
     }
   };
@@ -149,11 +169,13 @@ export default function Login() {
               {step === STEP.LOGIN && "Welcome Back"}
               {step === STEP.SIGNUP && "Join the Family"}
               {step === STEP.OTP && "Verify Account"}
+              {step === STEP.FORGOT && "Reset Password"}
             </h1>
             <p className="text-rose-400 font-bold text-[10px] sm:text-xs uppercase tracking-[0.2em]">
               {step === STEP.LOGIN && "Enter your details to continue"}
               {step === STEP.SIGNUP && "Create an account for a faster checkout"}
               {step === STEP.OTP && "Check your email for the code"}
+              {step === STEP.FORGOT && "We will send you a reset link"}
             </p>
           </div>
 
@@ -197,14 +219,25 @@ export default function Login() {
                   required 
                   className="w-full bg-rose-50/50 border border-rose-100 rounded-2xl px-6 py-4 sm:py-5 text-sm sm:text-lg focus:outline-none focus:border-pink-300 focus:bg-white transition-all font-bold placeholder-rose-200"
                 />
-                <input 
-                  type="password" 
-                  placeholder="Password" 
-                  value={password} 
-                  onChange={(e) => setPassword(e.target.value)} 
-                  required 
-                  className="w-full bg-rose-50/50 border border-rose-100 rounded-2xl px-6 py-4 sm:py-5 text-sm sm:text-lg focus:outline-none focus:border-pink-300 focus:bg-white transition-all font-bold placeholder-rose-200"
-                />
+                <div className="space-y-2">
+                  <input 
+                    type="password" 
+                    placeholder="Password" 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)} 
+                    required 
+                    className="w-full bg-rose-50/50 border border-rose-100 rounded-2xl px-6 py-4 sm:py-5 text-sm sm:text-lg focus:outline-none focus:border-pink-300 focus:bg-white transition-all font-bold placeholder-rose-200"
+                  />
+                  <div className="flex justify-end">
+                    <button 
+                      type="button"
+                      onClick={() => { setStep(STEP.FORGOT); resetErrors(); }}
+                      className="text-xs font-bold text-rose-400 hover:text-rose-600 transition-colors tracking-wide outline-none"
+                    >
+                      Forgot Password?
+                    </button>
+                  </div>
+                </div>
                 <button 
                   type="submit" 
                   disabled={loading}
@@ -279,6 +312,35 @@ export default function Login() {
                 
                 <button onClick={() => setStep(STEP.SIGNUP)} className="text-rose-400 hover:text-pink-500 text-xs font-black uppercase tracking-widest transition-colors">← Wrong email? Go back</button>
               </div>
+            )}
+
+            {step === STEP.FORGOT && (
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <input 
+                  type="email" 
+                  placeholder="Registered Email Address" 
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)} 
+                  required 
+                  className="w-full bg-rose-50/50 border border-rose-100 rounded-2xl px-6 py-4 sm:py-5 text-sm sm:text-lg focus:outline-none focus:border-pink-300 focus:bg-white transition-all font-bold placeholder-rose-200"
+                />
+                <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="w-full py-4 sm:py-6 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl sm:rounded-3xl font-black text-lg sm:text-2xl shadow-xl hover:shadow-2xl transition-all active:scale-95 disabled:opacity-50"
+                >
+                  {loading ? <div className="w-6 h-6 border-4 border-white/50 border-t-white rounded-full animate-spin mx-auto"></div> : "Send Reset Link ✨"}
+                </button>
+                <div className="text-center mt-4">
+                  <button 
+                    type="button" 
+                    onClick={() => { setStep(STEP.LOGIN); resetErrors(); }} 
+                    className="text-rose-400 hover:text-pink-500 text-xs font-black uppercase tracking-widest transition-colors outline-none"
+                  >
+                    ← Back to Sign In
+                  </button>
+                </div>
+              </form>
             )}
           </div>
         </div>

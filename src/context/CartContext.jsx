@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect, useState } from 'react';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const CartContext = createContext();
 
@@ -57,40 +58,66 @@ export function CartProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
+  const [isCloudSynced, setIsCloudSynced] = useState(false);
+
   // ── Hydrate and Manage Session State ──
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       if (user) {
+        setIsCloudSynced(false); // Reset sync state for new user
         try {
-          const savedCart = localStorage.getItem(`sparklehub_cart_${user.uid}`);
-          if (savedCart) dispatch({ type: ACTIONS.SET_CART, payload: JSON.parse(savedCart) });
-          else dispatch({ type: ACTIONS.CLEAR_CART });
+          // 1. Try to fetch from Firestore (Source of Truth for Cross-Device)
+          const userDocRef = doc(db, 'users', user.uid);
+          const userDoc = await getDoc(userDocRef);
+          
+          let cloudData = null;
+          if (userDoc.exists() && userDoc.data().cartData) {
+            cloudData = userDoc.data().cartData;
+            
+            // Hydrate from Cloud
+            if (cloudData.cart) dispatch({ type: ACTIONS.SET_CART, payload: cloudData.cart });
+            else dispatch({ type: ACTIONS.CLEAR_CART });
+            
+            if (cloudData.customPictures) setCustomPictures(cloudData.customPictures);
+            else setCustomPictures([]);
+            
+            if (cloudData.activeOrderId) setActiveOrderId(cloudData.activeOrderId);
+            else setActiveOrderId(null);
+          } else {
+            // 2. Fallback to Local Storage if no cloud data exists yet (Migration)
+            const savedCart = localStorage.getItem(`sparklehub_cart_${user.uid}`);
+            if (savedCart) dispatch({ type: ACTIONS.SET_CART, payload: JSON.parse(savedCart) });
+            else dispatch({ type: ACTIONS.CLEAR_CART });
 
-          const savedPics = localStorage.getItem(`sparklehub_pics_${user.uid}`);
-          if (savedPics) setCustomPictures(JSON.parse(savedPics));
-          else setCustomPictures([]);
+            const savedPics = localStorage.getItem(`sparklehub_pics_${user.uid}`);
+            if (savedPics) setCustomPictures(JSON.parse(savedPics));
+            else setCustomPictures([]);
 
-          const savedDraft = localStorage.getItem(`sparklehub_draft_${user.uid}`);
-          if (savedDraft) setActiveOrderId(savedDraft);
-          else setActiveOrderId(null);
-
+            const savedDraft = localStorage.getItem(`sparklehub_draft_${user.uid}`);
+            if (savedDraft) setActiveOrderId(savedDraft);
+            else setActiveOrderId(null);
+          }
         } catch (error) {
           console.error("Cart Hydration Error", error);
+        } finally {
+          setIsCloudSynced(true); // Hydration complete, safe to write to cloud now
         }
       } else {
         dispatch({ type: ACTIONS.CLEAR_CART });
         setCustomPictures([]);
         setActiveOrderId(null);
+        setIsCloudSynced(false);
       }
       setIsInitialized(true);
     });
     return unsubscribe;
   }, []);
 
-  // ── Persist to Local Storage ──
+  // ── Persist to Local Storage AND Cloud (Firestore) ──
   useEffect(() => {
-    if (isInitialized && currentUser) {
+    if (isInitialized && currentUser && isCloudSynced) {
+      // 1. Save locally for offline speed
       localStorage.setItem(`sparklehub_cart_${currentUser.uid}`, JSON.stringify(cart));
       localStorage.setItem(`sparklehub_pics_${currentUser.uid}`, JSON.stringify(customPictures));
       
@@ -99,8 +126,28 @@ export function CartProvider({ children }) {
       } else {
         localStorage.removeItem(`sparklehub_draft_${currentUser.uid}`);
       }
+
+      // 2. Sync to Firestore for Cross-Device Persistence
+      const syncToCloud = async () => {
+        try {
+          const userDocRef = doc(db, 'users', currentUser.uid);
+          await setDoc(userDocRef, {
+            cartData: {
+              cart,
+              customPictures,
+              activeOrderId
+            }
+          }, { merge: true });
+        } catch (error) {
+          console.error("Failed to sync cart to cloud:", error);
+        }
+      };
+      
+      // Debounce the cloud write slightly to avoid spamming Firestore on rapid quantity changes
+      const timeoutId = setTimeout(syncToCloud, 500);
+      return () => clearTimeout(timeoutId);
     }
-  }, [cart, customPictures, activeOrderId, currentUser, isInitialized]);
+  }, [cart, customPictures, activeOrderId, currentUser, isInitialized, isCloudSynced]);
 
   const addItem = (item) => {
     // Core protection: reject out-of-stock items at the context level

@@ -195,11 +195,14 @@ export default function TrackOrder() {
               </div>
 
               <div className="bg-rose-50 border border-white rounded-[2rem] sm:rounded-[3rem] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-inner">
-                <div className="text-center sm:text-left">
+                <div className="text-center sm:text-left flex-1">
                    <p className="text-rose-900 font-black text-lg sm:text-xl mb-1">Join the family!</p>
                    <p className="text-rose-800/60 font-bold text-xs sm:text-sm">Tag us in your stories when you receive it.</p>
                 </div>
-                <a href="https://www.instagram.com/elegent_sparkle_hub_?igsh=Y3Jud2poZ2c5bWow" target="_blank" rel="noopener noreferrer" className="px-8 py-3 bg-white border border-rose-200 text-rose-600 font-black rounded-2xl text-xs sm:text-sm shadow-sm hover:shadow-md transition-all active:scale-95 outline-none uppercase tracking-widest">Follow Now 📸</a>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a href="https://www.facebook.com/share/14ervgie2tx/" target="_blank" rel="noopener noreferrer" className="px-6 py-3 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 font-black rounded-2xl text-[10px] sm:text-xs shadow-sm hover:shadow-md transition-all active:scale-95 outline-none uppercase tracking-widest text-center">Facebook 📘</a>
+                  <a href="https://www.instagram.com/_elegent_sparkle_hub_?utm_source=qr&igsh=cWpmaWYwcGFrNGxz" target="_blank" rel="noopener noreferrer" className="px-6 py-3 bg-white border border-rose-200 text-rose-600 font-black rounded-2xl text-[10px] sm:text-xs shadow-sm hover:shadow-md transition-all active:scale-95 outline-none uppercase tracking-widest text-center">Instagram 📸</a>
+                </div>
               </div>
             </div>
           </div>

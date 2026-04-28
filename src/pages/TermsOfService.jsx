@@ -137,7 +137,15 @@ export default function TermsOfService() {
               WhatsApp Us
             </a>
             <a
-              href="https://www.instagram.com/elegent_sparkle_hub_?igsh=Y3Jud2poZ2c5bWow"
+              href="https://www.facebook.com/share/14ervgie2tx/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 px-6 py-3.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-2xl font-bold text-sm transition-all hover:shadow-sm outline-none"
+            >
+              Message on Facebook
+            </a>
+            <a
+              href="https://www.instagram.com/_elegent_sparkle_hub_?utm_source=qr&igsh=cWpmaWYwcGFrNGxz"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-br from-indigo-50 via-fuchsia-50 to-pink-50 hover:to-pink-100 text-fuchsia-700 border border-fuchsia-200 rounded-2xl font-bold text-sm transition-all hover:shadow-sm outline-none"
